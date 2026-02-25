@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chalala YaTU - Our Community Platform</title>
+    <title>Chalala YaTU – Community Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Leaflet CSS for Map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Supabase -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body style="margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f5f7fa; color: #333;">
 
@@ -145,6 +143,37 @@
                 </div>
             </section>
 
+            <!-- Local Representatives (NEW) -->
+            <section style="margin-bottom: 30px;">
+                <h2 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 700; color: #1e293b;">
+                    <i class="fas fa-user-tie" style="margin-right: 8px; color: #8b5cf6;"></i>Your Local Representatives
+                </h2>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <!-- MP Kabwata -->
+                    <div style="background-color: white; border-radius: 16px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 16px;">
+                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 30px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;">
+                            <i class="fas fa-landmark"></i>
+                        </div>
+                        <div>
+                            <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 700; color: #1e293b;">Hon. Andrew Banda</h3>
+                            <p style="margin: 0 0 4px 0; font-size: 13px; color: #64748b;">Member of Parliament, Kabwata</p>
+                            <p style="margin: 0; font-size: 12px; color: #475569;"><i class="fas fa-phone-alt" style="margin-right: 6px;"></i> +260 977 123456 · kabwata@parliament.gov.zm</p>
+                        </div>
+                    </div>
+                    <!-- Councilor Chalala -->
+                    <div style="background-color: white; border-radius: 16px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 16px;">
+                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 30px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div>
+                            <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 700; color: #1e293b;">Cllr. Margaret Tembo</h3>
+                            <p style="margin: 0 0 4px 0; font-size: 13px; color: #64748b;">Ward Councilor, Chalala</p>
+                            <p style="margin: 0; font-size: 12px; color: #475569;"><i class="fas fa-phone-alt" style="margin-right: 6px;"></i> +260 955 789012 · chalala@lcc.gov.zm</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Interactive Map -->
             <section id="mapSection" style="margin-bottom: 30px;">
                 <h2 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 700; color: #1e293b;">
@@ -162,7 +191,7 @@
                 </div>
             </section>
 
-            <!-- Quick Report Section -->
+            <!-- Quick Report Section (includes new "General" category) -->
             <section style="margin-bottom: 30px;">
                 <h2 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 700; color: #1e293b;">
                     <i class="fas fa-exclamation-triangle" style="margin-right: 8px; color: #ef4444;"></i>Quick Report
@@ -203,6 +232,15 @@
                         </div>
                         <h3 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 600; color: #1e293b;">Waste Issue</h3>
                         <p style="margin: 0; font-size: 12px; color: #64748b;">Dumping, collection</p>
+                    </button>
+
+                    <!-- NEW: General Issue -->
+                    <button onclick="quickReport('general')" style="background-color: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: none; border-left: 4px solid #8b5cf6; cursor: pointer; text-align: left;">
+                        <div style="width: 40px; height: 40px; background-color: #ede9fe; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+                            <i class="fas fa-comment" style="color: #8b5cf6; font-size: 18px;"></i>
+                        </div>
+                        <h3 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 600; color: #1e293b;">General Issue</h3>
+                        <p style="margin: 0; font-size: 12px; color: #64748b;">Feedback, suggestions, etc.</p>
                     </button>
                 </div>
             </section>
@@ -270,7 +308,7 @@
         </nav>
     </div>
 
-    <!-- REPORT MODAL -->
+    <!-- REPORT MODAL (updated with General category) -->
     <div id="reportModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center;">
         <div style="background-color: white; border-radius: 20px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; padding: 24px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -285,6 +323,7 @@
                     <option value="water">Water & Sanitation</option>
                     <option value="roads">Roads & Flooding</option>
                     <option value="waste">Waste Management</option>
+                    <option value="general">General / Community Feedback</option>
                 </select>
             </div>
             
@@ -353,16 +392,50 @@
         </div>
     </div>
 
-    <!-- JavaScript -->
+    <!-- JavaScript - Local DB, no Supabase -->
     <script>
-        // Supabase Configuration - REPLACE WITH YOUR CREDENTIALS
-        const SUPABASE_URL = 'https://your-project-id.supabase.co';
-        const SUPABASE_ANON_KEY = 'your-anon-key-here';
-        
-        // Initialize Supabase
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        // App State
+        // ==================== LOCAL DATABASE ====================
+        const DB = {
+            profiles: [
+                { id: 'user_demo', phone: '+260970000000', full_name: 'Demo User', trust_score: 150, reports_submitted: 5, reports_verified: 12, last_report_at: null },
+                { id: 'user_admin', phone: '+260971111111', full_name: 'Community Admin', trust_score: 500, reports_submitted: 20, reports_verified: 45, last_report_at: null }
+            ],
+            reports: [
+                { id: 'rep1', user_id: 'user_demo', category: 'security', title: 'Suspicious person near market', description: 'Loitering for hours', latitude: -15.425, longitude: 28.325, is_anonymous: false, status: 'pending', confirmations: 2, flags: 0, is_verified: false, created_at: new Date(Date.now() - 2*24*60*60*1000).toISOString() },
+                { id: 'rep2', user_id: 'user_admin', category: 'water', title: 'Broken pipe on Main Street', description: 'Water gushing out', latitude: -15.430, longitude: 28.330, is_anonymous: true, status: 'in_progress', confirmations: 5, flags: 0, is_verified: true, created_at: new Date(Date.now() - 5*24*60*60*1000).toISOString() },
+                { id: 'rep3', user_id: 'user_demo', category: 'roads', title: 'Large pothole near school', description: 'Dangerous for kids', latitude: -15.420, longitude: 28.320, is_anonymous: false, status: 'resolved', confirmations: 8, flags: 0, is_verified: true, created_at: new Date(Date.now() - 10*24*60*60*1000).toISOString() },
+                { id: 'rep4', user_id: 'user_demo', category: 'general', title: 'Suggest new speed bump', description: 'Cars speed too fast on this road', latitude: -15.422, longitude: 28.322, is_anonymous: true, status: 'pending', confirmations: 1, flags: 0, is_verified: false, created_at: new Date(Date.now() - 1*24*60*60*1000).toISOString() }
+            ],
+            verifications: [],
+            admin_questions: [
+                { id: 'q1', question: 'How do you feel about the new market construction?', active: true, created_at: new Date(Date.now() - 1*24*60*60*1000).toISOString() }
+            ],
+            question_responses: [
+                { question_id: 'q1', user_id: 'user_demo', reaction: 'good', comment: '' },
+                { question_id: 'q1', user_id: 'user_admin', reaction: 'okay', comment: 'Needs more lighting' }
+            ],
+            cdf_projects: [
+                { id: 'cdf1', title: 'Market Rehabilitation', description: 'Upgrading Chalala market', budget: 2000000, spent: 850000, progress: 42, start_date: '2025-01-01', end_date: '2025-12-31', created_at: new Date().toISOString() },
+                { id: 'cdf2', title: 'Road Patching', description: 'Fixing potholes in Zone 3', budget: 800000, spent: 300000, progress: 37, start_date: '2025-02-15', end_date: '2025-06-30', created_at: new Date().toISOString() }
+            ]
+        };
+
+        // Load from localStorage if available
+        function loadDB() {
+            try {
+                const saved = localStorage.getItem('chalala_db');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    Object.assign(DB, parsed);
+                }
+            } catch (e) {}
+        }
+        function saveDB() {
+            localStorage.setItem('chalala_db', JSON.stringify(DB));
+        }
+        loadDB();
+
+        // ==================== App State ====================
         let currentUser = null;
         let userProfile = null;
         let userLocation = null;
@@ -370,44 +443,27 @@
         let markers = [];
         let lastReportTime = null;
         let currentQuestion = null;
-        
-        // Chalala boundary (approximate coordinates for demonstration)
+
         const CHALALA_BOUNDARY = {
             type: "Polygon",
             coordinates: [[
-                [28.300, -15.450], // SW
-                [28.350, -15.450], // SE
-                [28.350, -15.400], // NE
-                [28.300, -15.400], // NW
-                [28.300, -15.450]  // SW (close)
+                [28.300, -15.450],
+                [28.350, -15.450],
+                [28.350, -15.400],
+                [28.300, -15.400],
+                [28.300, -15.450]
             ]]
         };
-        
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', async () => {
-            checkAuth();
-            setupOTPInputs();
-            
-            // Check for saved session
-            const session = localStorage.getItem('chalala_session');
-            if (session) {
-                const { userId, phone } = JSON.parse(session);
-                await loginUser(userId, phone);
-            } else {
-                showAuthModal();
-            }
-        });
-        
-        // Authentication Functions
+
+        // ==================== Auth Functions ====================
         function showAuthModal() {
             document.getElementById('authModal').style.display = 'flex';
             document.getElementById('appContent').style.display = 'none';
         }
-        
         function closeAuthModal() {
             document.getElementById('authModal').style.display = 'none';
         }
-        
+
         function setupOTPInputs() {
             const inputs = document.querySelectorAll('#authStep2 input[type="text"]');
             inputs.forEach((input, index) => {
@@ -416,7 +472,6 @@
                         inputs[index + 1].focus();
                     }
                 });
-                
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Backspace' && !e.target.value && index > 0) {
                         inputs[index - 1].focus();
@@ -424,975 +479,579 @@
                 });
             });
         }
-        
-        async function sendOTP() {
+
+        function sendOTP() {
             const phone = document.getElementById('phoneInput').value.trim();
-            
             if (!phone || !phone.startsWith('+260')) {
                 alert('Please enter a valid Zambian phone number starting with +260');
                 return;
             }
-            
-            // In production, use SMS service like Twilio or Africa's Talking
-            // For demo, we'll simulate OTP
             const otp = Math.floor(100000 + Math.random() * 900000).toString();
             localStorage.setItem('temp_otp', otp);
             localStorage.setItem('temp_phone', phone);
-            
+
             document.getElementById('phoneNumberDisplay').textContent = phone;
             document.getElementById('authStep1').style.display = 'none';
             document.getElementById('authStep2').style.display = 'block';
-            
-            // Simulate SMS delay
+
             setTimeout(() => {
-                alert(`Demo OTP: ${otp}\nIn production, this would be sent via SMS`);
-            }, 1000);
+                alert(`[DEMO] Your OTP is: ${otp}`);
+            }, 500);
         }
-        
-        async function verifyOTP() {
+
+        function verifyOTP() {
             const otpInputs = document.querySelectorAll('#authStep2 input[type="text"]');
             const enteredOTP = Array.from(otpInputs).map(input => input.value).join('');
             const savedOTP = localStorage.getItem('temp_otp');
             const phone = localStorage.getItem('temp_phone');
-            
+
             if (enteredOTP === savedOTP) {
-                // Create or get user
-                const userId = await createOrGetUser(phone);
-                
-                // Save session
+                const userId = createOrGetUser(phone);
                 localStorage.setItem('chalala_session', JSON.stringify({
-                    userId,
-                    phone,
-                    timestamp: Date.now()
+                    userId, phone, timestamp: Date.now()
                 }));
-                
-                // Login user
-                await loginUser(userId, phone);
-                
+                loginUser(userId, phone);
                 closeAuthModal();
                 document.getElementById('appContent').style.display = 'block';
-                
-                // Clear temp data
                 localStorage.removeItem('temp_otp');
                 localStorage.removeItem('temp_phone');
             } else {
-                alert('Invalid OTP. Please try again.');
+                alert('Invalid OTP. Try again.');
             }
         }
-        
-        async function createOrGetUser(phone) {
-            // Check if user exists
-            const { data: existingUser } = await supabase
-                .from('profiles')
-                .select('id')
-                .eq('phone', phone)
-                .single();
-            
-            if (existingUser) {
-                return existingUser.id;
+
+        function createOrGetUser(phone) {
+            let profile = DB.profiles.find(p => p.phone === phone);
+            if (!profile) {
+                profile = {
+                    id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                    phone: phone,
+                    full_name: 'Community Member',
+                    trust_score: 100,
+                    reports_submitted: 0,
+                    reports_verified: 0,
+                    last_report_at: null
+                };
+                DB.profiles.push(profile);
+                saveDB();
             }
-            
-            // Create new user
-            const newUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            
-            const { error } = await supabase
-                .from('profiles')
-                .insert([
-                    {
-                        id: newUserId,
-                        phone: phone,
-                        full_name: 'Community Member',
-                        trust_score: 100,
-                        reports_submitted: 0,
-                        reports_verified: 0
-                    }
-                ]);
-            
-            if (error) {
-                console.error('Error creating user:', error);
-                return null;
-            }
-            
-            return newUserId;
+            return profile.id;
         }
-        
-        async function loginUser(userId, phone) {
+
+        function loginUser(userId, phone) {
             currentUser = { id: userId, phone };
-            
-            // Load user profile
-            const { data: profile } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', userId)
-                .single();
-            
-            userProfile = profile;
-            
-            // Update UI
-            document.getElementById('trustScoreBadge').textContent = `Score: ${profile.trust_score}`;
-            
-            // Load initial data
+            userProfile = DB.profiles.find(p => p.id === userId);
+            if (!userProfile) return;
+
+            document.getElementById('trustScoreBadge').textContent = `Score: ${userProfile.trust_score}`;
             loadCommunityPulse();
             initializeMap();
             loadReports();
             loadCDFProjects();
             loadUserStats();
-            
-            // Request location permission
-            getCurrentLocation();
+            getCurrentLocation(); // ask for location
         }
-        
+
         function logout() {
             localStorage.removeItem('chalala_session');
             currentUser = null;
             userProfile = null;
             showAuthModal();
+            document.getElementById('appContent').style.display = 'none';
         }
-        
-        // Map Functions
+
+        // ==================== Map Functions ====================
         function initializeMap() {
-            if (map) {
-                map.remove();
-            }
-            
-            // Set default center to Chalala, Lusaka
+            if (map) map.remove();
             const defaultCenter = [-15.425, 28.325];
-            
             map = L.map('map').setView(defaultCenter, 14);
-            
-            // Add OpenStreetMap tiles
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
-            
-            // Add Chalala boundary
             L.geoJSON(CHALALA_BOUNDARY, {
-                style: {
-                    color: '#2563eb',
-                    weight: 2,
-                    fillOpacity: 0.1
-                }
+                style: { color: '#2563eb', weight: 2, fillOpacity: 0.1 }
             }).addTo(map);
-            
-            // Add user location marker if available
             if (userLocation) {
-                L.marker([userLocation.lat, userLocation.lng])
-                    .addTo(map)
-                    .bindPopup('Your Location')
-                    .openPopup();
+                L.marker([userLocation.lat, userLocation.lng]).addTo(map).bindPopup('Your Location').openPopup();
             }
         }
-        
+
         function filterMap(category) {
             // Clear existing markers
-            markers.forEach(marker => map.removeLayer(marker));
+            markers.forEach(m => map.removeLayer(m));
             markers = [];
-            
-            // Load filtered reports
+            // Reload reports with that category filter (or all)
             loadReports(category);
         }
-        
-        // Report Functions
+
+        // ==================== Reports ====================
         function openReportModal() {
-            // Check rate limit
             if (lastReportTime) {
-                const timeSinceLastReport = Date.now() - lastReportTime;
-                if (timeSinceLastReport < 15 * 60 * 1000) { // 15 minutes
-                    const minutesLeft = Math.ceil((15 * 60 * 1000 - timeSinceLastReport) / (60 * 1000));
+                const timeSince = Date.now() - lastReportTime;
+                if (timeSince < 15 * 60 * 1000) {
+                    const mins = Math.ceil((15*60*1000 - timeSince) / 60000);
                     document.getElementById('rateLimitWarning').style.display = 'block';
                     document.getElementById('rateLimitWarning').innerHTML = `
-                        <p style="margin: 0; font-size: 14px; color: #92400e;">
-                            <i class="fas fa-clock" style="margin-right: 8px;"></i>
-                            Rate limit: One report every 15 minutes. Please wait ${minutesLeft} more minutes.
-                        </p>
-                    `;
+                        <p style="margin:0;font-size:14px;color:#92400e;">
+                            <i class="fas fa-clock" style="margin-right:8px;"></i>
+                            Rate limit: One report every 15 minutes. Please wait ${mins} more minutes.
+                        </p>`;
                     return;
                 }
             }
-            
             document.getElementById('reportModal').style.display = 'flex';
             document.getElementById('rateLimitWarning').style.display = 'none';
         }
-        
         function closeReportModal() {
             document.getElementById('reportModal').style.display = 'none';
         }
-        
         function quickReport(category) {
             openReportModal();
             document.getElementById('reportCategory').value = category;
             getCurrentLocation();
         }
-        
-        async function getCurrentLocation() {
+
+        function getCurrentLocation() {
             if (!navigator.geolocation) {
-                alert('Geolocation is not supported by your browser');
+                alert('Geolocation not supported');
                 return;
             }
-            
-            try {
-                const position = await new Promise((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(resolve, reject, {
-                        enableHighAccuracy: true,
-                        timeout: 5000,
-                        maximumAge: 0
-                    });
-                });
-                
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-                
-                userLocation = { lat, lng };
-                
-                // Check if within Chalala boundary
-                if (isWithinBoundary(lat, lng)) {
-                    document.getElementById('locationStatus').innerHTML = `
-                        <span style="color: #10b981;">
-                            <i class="fas fa-check-circle"></i> Location confirmed: Within Chalala
-                        </span>
-                    `;
-                } else {
-                    document.getElementById('locationStatus').innerHTML = `
-                        <span style="color: #ef4444;">
-                            <i class="fas fa-exclamation-triangle"></i> Outside Chalala boundary
-                        </span>
-                    `;
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+                    userLocation = { lat, lng };
+                    const inside = isWithinBoundary(lat, lng);
+                    document.getElementById('locationStatus').innerHTML = inside
+                        ? '<span style="color:#10b981;"><i class="fas fa-check-circle"></i> Within Chalala</span>'
+                        : '<span style="color:#ef4444;"><i class="fas fa-exclamation-triangle"></i> Outside Chalala</span>';
+                    document.getElementById('reportLatitude').value = lat;
+                    document.getElementById('reportLongitude').value = lng;
+                    if (map) {
+                        map.setView([lat, lng], 16);
+                        L.marker([lat, lng]).addTo(map).bindPopup('Your Location').openPopup();
+                    }
+                },
+                () => {
+                    document.getElementById('locationStatus').textContent = 'Unable to get location.';
                 }
-                
-                document.getElementById('reportLatitude').value = lat;
-                document.getElementById('reportLongitude').value = lng;
-                
-                // Center map on user location
-                if (map) {
-                    map.setView([lat, lng], 16);
-                    L.marker([lat, lng])
-                        .addTo(map)
-                        .bindPopup('Your Location')
-                        .openPopup();
-                }
-                
-            } catch (error) {
-                console.error('Error getting location:', error);
-                document.getElementById('locationStatus').textContent = 'Unable to get location. Please enable location services.';
-            }
+            );
         }
-        
+
         function isWithinBoundary(lat, lng) {
-            // Simple bounding box check
-            return lat >= -15.450 && lat <= -15.400 && 
-                   lng >= 28.300 && lng <= 28.350;
+            return lat >= -15.450 && lat <= -15.400 && lng >= 28.300 && lng <= 28.350;
         }
-        
-        async function submitReport() {
-            if (!currentUser) {
-                alert('Please login first');
-                return;
-            }
-            
+
+        function submitReport() {
+            if (!currentUser) { alert('Please login'); return; }
             const category = document.getElementById('reportCategory').value;
             const title = document.getElementById('reportTitle').value.trim();
-            const description = document.getElementById('reportDescription').value.trim();
-            const latitude = parseFloat(document.getElementById('reportLatitude').value);
-            const longitude = parseFloat(document.getElementById('reportLongitude').value);
-            const isAnonymous = document.getElementById('anonymousToggle').checked;
-            
-            // Validation
-            if (!title) {
-                alert('Please enter a title for your report');
+            const desc = document.getElementById('reportDescription').value.trim();
+            const lat = parseFloat(document.getElementById('reportLatitude').value);
+            const lng = parseFloat(document.getElementById('reportLongitude').value);
+            const anonymous = document.getElementById('anonymousToggle').checked;
+
+            if (!title) { alert('Enter a title'); return; }
+            if (!lat || !lng) { alert('Select a location'); return; }
+            if (!isWithinBoundary(lat, lng)) { alert('Must be within Chalala'); return; }
+            if (lastReportTime && (Date.now() - lastReportTime < 15*60*1000)) {
+                alert('Rate limit: one report per 15 minutes');
                 return;
             }
-            
-            if (!latitude || !longitude) {
-                alert('Please select a location for your report');
-                return;
-            }
-            
-            if (!isWithinBoundary(latitude, longitude)) {
-                alert('Reports can only be submitted within Chalala area');
-                return;
-            }
-            
-            // Check rate limit
-            if (lastReportTime) {
-                const timeSinceLastReport = Date.now() - lastReportTime;
-                if (timeSinceLastReport < 15 * 60 * 1000) {
-                    alert('Rate limit: One report every 15 minutes. Please wait before submitting another.');
-                    return;
-                }
-            }
-            
-            // Submit report
-            const { data: report, error } = await supabase
-                .from('reports')
-                .insert([
-                    {
-                        user_id: currentUser.id,
-                        category: category,
-                        title: title,
-                        description: description,
-                        latitude: latitude,
-                        longitude: longitude,
-                        is_anonymous: isAnonymous,
-                        status: 'pending',
-                        confirmations: 0,
-                        flags: 0,
-                        is_verified: false
-                    }
-                ])
-                .select()
-                .single();
-            
-            if (error) {
-                console.error('Error submitting report:', error);
-                alert('Error submitting report. Please try again.');
-                return;
-            }
-            
-            // Update user stats
-            await supabase
-                .from('profiles')
-                .update({
-                    reports_submitted: userProfile.reports_submitted + 1,
-                    last_report_at: new Date().toISOString()
-                })
-                .eq('id', currentUser.id);
-            
-            // Update last report time
+
+            const newReport = {
+                id: 'rep_' + Date.now() + '_' + Math.random().toString(36).substr(2,5),
+                user_id: currentUser.id,
+                category, title, description: desc,
+                latitude: lat, longitude: lng,
+                is_anonymous: anonymous,
+                status: 'pending',
+                confirmations: 0, flags: 0, is_verified: false,
+                created_at: new Date().toISOString()
+            };
+            DB.reports.unshift(newReport);
+
+            userProfile.reports_submitted += 1;
+            userProfile.last_report_at = new Date().toISOString();
+            saveDB();
+
             lastReportTime = Date.now();
-            
-            // Update UI
-            alert('Report submitted successfully! It will be verified by the community.');
+            alert('Report submitted!');
             closeReportModal();
-            
-            // Reset form
             document.getElementById('reportTitle').value = '';
             document.getElementById('reportDescription').value = '';
-            
-            // Reload reports and map
             loadReports();
         }
-        
-        // Data Loading Functions
-        async function loadCommunityPulse() {
-            // Load current question
-            const { data: question } = await supabase
-                .from('admin_questions')
-                .select('*')
-                .eq('active', true)
-                .order('created_at', { ascending: false })
-                .limit(1)
-                .single();
-            
-            if (question) {
-                currentQuestion = question;
-                
-                document.getElementById('currentQuestion').innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-                        <div style="width: 32px; height: 32px; background-color: #2563eb; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-user-shield" style="color: white; font-size: 16px;"></i>
-                        </div>
-                        <div>
-                            <div style="font-weight: 600; color: #1e293b; font-size: 14px;">Community Admin</div>
-                            <div style="font-size: 11px; color: #64748b;">Posted: ${new Date(question.created_at).toLocaleDateString()}</div>
-                        </div>
+
+        // ==================== Community Pulse ====================
+        function loadCommunityPulse() {
+            const question = DB.admin_questions.find(q => q.active === true);
+            if (!question) return;
+            currentQuestion = question;
+            document.getElementById('currentQuestion').innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <div style="width:32px;height:32px;background:#2563eb;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-user-shield" style="color:white;font-size:16px;"></i>
                     </div>
-                    <p style="margin: 0; font-size: 15px; color: #334155; font-weight: 500; line-height: 1.5;">
-                        "${question.question}"
-                    </p>
-                `;
-                
-                // Load reactions
-                await loadQuestionReactions(question.id);
-            }
+                    <div>
+                        <div style="font-weight:600;color:#1e293b;">Community Admin</div>
+                        <div style="font-size:11px;color:#64748b;">Posted: ${new Date(question.created_at).toLocaleDateString()}</div>
+                    </div>
+                </div>
+                <p style="margin:0;font-size:15px;color:#334155;font-weight:500;">"${question.question}"</p>
+            `;
+            loadQuestionReactions(question.id);
         }
-        
-        async function loadQuestionReactions(questionId) {
-            const { data: reactions } = await supabase
-                .from('question_responses')
-                .select('reaction')
-                .eq('question_id', questionId);
-            
-            let bad = 0, okay = 0, good = 0;
-            
-            reactions.forEach(r => {
+
+        function loadQuestionReactions(qid) {
+            const responses = DB.question_responses.filter(r => r.question_id === qid);
+            let bad=0, okay=0, good=0;
+            responses.forEach(r => {
                 if (r.reaction === 'bad') bad++;
-                if (r.reaction === 'okay') okay++;
-                if (r.reaction === 'good') good++;
+                else if (r.reaction === 'okay') okay++;
+                else if (r.reaction === 'good') good++;
             });
-            
-            const total = bad + okay + good || 1;
-            const badPercent = Math.round((bad / total) * 100);
-            const okayPercent = Math.round((okay / total) * 100);
-            const goodPercent = Math.round((good / total) * 100);
-            
+            const total = bad+okay+good || 1;
+            const badP = Math.round(bad/total*100);
+            const okayP = Math.round(okay/total*100);
+            const goodP = Math.round(good/total*100);
             document.getElementById('sentimentChart').innerHTML = `
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                    <button onclick="submitReaction('bad')" style="width: 50px; font-size: 13px; background: none; border: none; cursor: pointer; text-align: left;">😠 Bad</button>
-                    <div style="flex: 1; height: 16px; background-color: #e2e8f0; border-radius: 8px; overflow: hidden;">
-                        <div style="width: ${badPercent}%; height: 100%; background-color: #ef4444;"></div>
+                <div style="display:flex;align-items:center;margin-bottom:8px;">
+                    <button onclick="submitReaction('bad')" style="width:50px;font-size:13px;background:none;border:none;cursor:pointer;text-align:left;">😠 Bad</button>
+                    <div style="flex:1;height:16px;background:#e2e8f0;border-radius:8px;overflow:hidden;">
+                        <div style="width:${badP}%;height:100%;background:#ef4444;"></div>
                     </div>
-                    <span style="width: 40px; text-align: right; font-weight: 600; font-size: 13px;">${badPercent}%</span>
+                    <span style="width:40px;text-align:right;font-weight:600;font-size:13px;">${badP}%</span>
                 </div>
-                
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                    <button onclick="submitReaction('okay')" style="width: 50px; font-size: 13px; background: none; border: none; cursor: pointer; text-align: left;">😐 Okay</button>
-                    <div style="flex: 1; height: 16px; background-color: #e2e8f0; border-radius: 8px; overflow: hidden;">
-                        <div style="width: ${okayPercent}%; height: 100%; background-color: #f59e0b;"></div>
+                <div style="display:flex;align-items:center;margin-bottom:8px;">
+                    <button onclick="submitReaction('okay')" style="width:50px;font-size:13px;background:none;border:none;cursor:pointer;text-align:left;">😐 Okay</button>
+                    <div style="flex:1;height:16px;background:#e2e8f0;border-radius:8px;overflow:hidden;">
+                        <div style="width:${okayP}%;height:100%;background:#f59e0b;"></div>
                     </div>
-                    <span style="width: 40px; text-align: right; font-weight: 600; font-size: 13px;">${okayPercent}%</span>
+                    <span style="width:40px;text-align:right;font-weight:600;font-size:13px;">${okayP}%</span>
                 </div>
-                
-                <div style="display: flex; align-items: center;">
-                    <button onclick="submitReaction('good')" style="width: 50px; font-size: 13px; background: none; border: none; cursor: pointer; text-align: left;">😊 Good</button>
-                    <div style="flex: 1; height: 16px; background-color: #e2e8f0; border-radius: 8px; overflow: hidden;">
-                        <div style="width: ${goodPercent}%; height: 100%; background-color: #10b981;"></div>
+                <div style="display:flex;align-items:center;">
+                    <button onclick="submitReaction('good')" style="width:50px;font-size:13px;background:none;border:none;cursor:pointer;text-align:left;">😊 Good</button>
+                    <div style="flex:1;height:16px;background:#e2e8f0;border-radius:8px;overflow:hidden;">
+                        <div style="width:${goodP}%;height:100%;background:#10b981;"></div>
                     </div>
-                    <span style="width: 40px; text-align: right; font-weight: 600; font-size: 13px;">${goodPercent}%</span>
+                    <span style="width:40px;text-align:right;font-weight:600;font-size:13px;">${goodP}%</span>
                 </div>
             `;
         }
-        
-        async function submitReaction(reaction) {
+
+        function submitReaction(reaction) {
             if (!currentUser || !currentQuestion) return;
-            
-            const { error } = await supabase
-                .from('question_responses')
-                .upsert([
-                    {
-                        question_id: currentQuestion.id,
-                        user_id: currentUser.id,
-                        reaction: reaction
-                    }
-                ], {
-                    onConflict: 'question_id,user_id'
+            const existing = DB.question_responses.find(r => r.question_id === currentQuestion.id && r.user_id === currentUser.id);
+            if (existing) {
+                existing.reaction = reaction;
+            } else {
+                DB.question_responses.push({
+                    question_id: currentQuestion.id,
+                    user_id: currentUser.id,
+                    reaction: reaction,
+                    comment: ''
                 });
-            
-            if (!error) {
-                loadQuestionReactions(currentQuestion.id);
             }
+            saveDB();
+            loadQuestionReactions(currentQuestion.id);
         }
-        
-        async function addComment() {
-            if (!currentUser || !currentQuestion) {
-                alert('Please login to comment');
-                return;
-            }
-            
-            const commentInput = document.getElementById('commentInput');
-            const comment = commentInput.value.trim();
-            
-            if (!comment) {
-                alert('Please enter a comment');
-                return;
-            }
-            
-            const { error } = await supabase
-                .from('question_responses')
-                .upsert([
-                    {
-                        question_id: currentQuestion.id,
-                        user_id: currentUser.id,
-                        reaction: 'okay', // Default reaction with comment
-                        comment: comment
-                    }
-                ], {
-                    onConflict: 'question_id,user_id'
+
+        function addComment() {
+            if (!currentUser || !currentQuestion) { alert('Login first'); return; }
+            const comment = document.getElementById('commentInput').value.trim();
+            if (!comment) { alert('Enter comment'); return; }
+            const existing = DB.question_responses.find(r => r.question_id === currentQuestion.id && r.user_id === currentUser.id);
+            if (existing) {
+                existing.comment = comment;
+            } else {
+                DB.question_responses.push({
+                    question_id: currentQuestion.id,
+                    user_id: currentUser.id,
+                    reaction: 'okay',
+                    comment: comment
                 });
-            
-            if (!error) {
-                commentInput.value = '';
-                alert('Comment added!');
-                loadQuestionReactions(currentQuestion.id);
             }
+            saveDB();
+            document.getElementById('commentInput').value = '';
+            alert('Comment added');
+            loadQuestionReactions(currentQuestion.id);
         }
-        
-        async function loadReports(filter = 'all') {
-            let query = supabase
-                .from('reports')
-                .select(`
-                    *,
-                    profiles:user_id (phone, trust_score)
-                `)
-                .order('created_at', { ascending: false })
-                .limit(20);
-            
-            // Apply filters
+
+        // ==================== Load Reports with Filter and Map Markers ====================
+        function loadReports(filter = 'all') {
+            let reports = [...DB.reports];
+            // Apply filter
             if (filter === 'verified') {
-                query = query.eq('is_verified', true);
-            } else if (filter === 'security') {
-                query = query.eq('category', 'security');
-            } else if (filter === 'water') {
-                query = query.eq('category', 'water');
+                reports = reports.filter(r => r.is_verified);
             } else if (filter === '7days') {
-                const weekAgo = new Date();
-                weekAgo.setDate(weekAgo.getDate() - 7);
-                query = query.gte('created_at', weekAgo.toISOString());
+                const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+                reports = reports.filter(r => new Date(r.created_at) >= weekAgo);
+            } else if (filter === 'security' || filter === 'water' || filter === 'roads' || filter === 'waste' || filter === 'general') {
+                reports = reports.filter(r => r.category === filter);
+            } else if (filter === 'nearby' && userLocation) {
+                reports = reports.filter(r => {
+                    if (!r.latitude) return false;
+                    const d = Math.hypot(r.latitude - userLocation.lat, r.longitude - userLocation.lng);
+                    return d < 0.01; // ~1km
+                });
             }
-            
-            const { data: reports, error } = await query;
-            
-            if (error) {
-                console.error('Error loading reports:', error);
-                return;
-            }
-            
+
             // Update stats
             const active = reports.filter(r => r.status === 'pending').length;
             const resolved = reports.filter(r => r.status === 'resolved').length;
-            
             document.getElementById('activeReports').textContent = active;
             document.getElementById('resolvedReports').textContent = resolved;
             document.getElementById('totalReports').textContent = reports.length;
-            
-            // Display reports
-            const reportsList = document.getElementById('reportsList');
-            reportsList.innerHTML = '';
-            
-            reports.forEach(report => {
-                const categoryIcons = {
+
+            // Clear and rebuild reports list
+            const container = document.getElementById('reportsList');
+            container.innerHTML = '';
+            if (reports.length === 0) {
+                container.innerHTML = '<div style="padding:20px;text-align:center;color:#64748b;">No reports found</div>';
+                return;
+            }
+
+            // Clear existing map markers
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+
+            reports.slice(0, 20).forEach(report => {
+                const categoryIcon = {
                     security: { icon: 'fa-shield-alt', color: '#ef4444', bg: '#fee2e2' },
                     water: { icon: 'fa-tint', color: '#0ea5e9', bg: '#e0f2fe' },
                     roads: { icon: 'fa-road', color: '#f59e0b', bg: '#fef3c7' },
-                    waste: { icon: 'fa-trash', color: '#10b981', bg: '#d1fae5' }
+                    waste: { icon: 'fa-trash', color: '#10b981', bg: '#d1fae5' },
+                    general: { icon: 'fa-comment', color: '#8b5cf6', bg: '#ede9fe' }
+                }[report.category] || { icon: 'fa-flag', color: '#64748b', bg: '#f1f5f9' };
+
+                const el = document.createElement('div');
+                el.style.cssText = "padding:16px;border-bottom:1px solid #f1f5f9;display:flex;align-items:flex-start;gap:12px;cursor:pointer;";
+                // Click on the whole card centers map on this report
+                el.onclick = (e) => {
+                    // Prevent click when interacting with buttons inside
+                    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+                    if (map && report.latitude && report.longitude) {
+                        map.setView([report.latitude, report.longitude], 16);
+                        // Find the marker for this report and open its popup
+                        const marker = markers.find(m => m.reportId === report.id);
+                        if (marker) marker.openPopup();
+                    }
                 };
-                
-                const category = categoryIcons[report.category] || categoryIcons.security;
-                
-                const reportElement = document.createElement('div');
-                reportElement.style.cssText = "padding: 16px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start; gap: 12px;";
-                reportElement.innerHTML = `
-                    <div style="width: 40px; height: 40px; background-color: ${category.bg}; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas ${category.icon}" style="color: ${category.color};"></i>
+                el.innerHTML = `
+                    <div style="width:40px;height:40px;background:${categoryIcon.bg};border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas ${categoryIcon.icon}" style="color:${categoryIcon.color};"></i>
                     </div>
-                    <div style="flex: 1;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
-                            <h3 style="margin: 0; font-size: 15px; font-weight: 600; color: #1e293b;">${report.title}</h3>
-                            <span style="font-size: 11px; color: #64748b;">${timeAgo(new Date(report.created_at))}</span>
+                    <div style="flex:1;">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                            <h3 style="margin:0;font-size:15px;font-weight:600;color:#1e293b;">${report.title}</h3>
+                            <span style="font-size:11px;color:#64748b;">${timeAgo(new Date(report.created_at))}</span>
                         </div>
-                        <p style="margin: 0 0 8px 0; font-size: 13px; color: #64748b;">${report.description || 'No description'}</p>
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <span style="font-size: 11px; color: ${getStatusColor(report.status)}; background-color: ${getStatusBg(report.status)}; padding: 2px 8px; border-radius: 10px;">
+                        <p style="margin:0 0 8px 0;font-size:13px;color:#64748b;">${report.description || ''}</p>
+                        <div style="display:flex;align-items:center;justify-content:space-between;">
+                            <span style="font-size:11px;color:${getStatusColor(report.status)};background:${getStatusBg(report.status)};padding:2px 8px;border-radius:10px;">
                                 ${report.is_verified ? '✅ Verified' : getStatusText(report.status)}
                                 ${report.confirmations > 0 ? ` (${report.confirmations} confirms)` : ''}
                             </span>
                             <div>
-                                <button onclick="verifyReport('${report.id}', 'confirm')" style="background: none; border: none; color: #10b981; font-size: 14px; cursor: pointer; margin-right: 8px;">
-                                    <i class="fas fa-check"></i>
-                                </button>
-                                <button onclick="verifyReport('${report.id}', 'flag')" style="background: none; border: none; color: #ef4444; font-size: 14px; cursor: pointer;">
-                                    <i class="fas fa-flag"></i>
-                                </button>
+                                <button onclick="verifyReport('${report.id}', 'confirm'); event.stopPropagation();" style="background:none;border:none;color:#10b981;font-size:14px;cursor:pointer;margin-right:8px;"><i class="fas fa-check"></i></button>
+                                <button onclick="verifyReport('${report.id}', 'flag'); event.stopPropagation();" style="background:none;border:none;color:#ef4444;font-size:14px;cursor:pointer;"><i class="fas fa-flag"></i></button>
                             </div>
                         </div>
                     </div>
                 `;
-                
-                reportsList.appendChild(reportElement);
-                
-                // Add to map
+                container.appendChild(el);
+
+                // Add marker to map
                 if (map && report.latitude && report.longitude) {
-                    const markerColor = category.color;
                     const marker = L.circleMarker([report.latitude, report.longitude], {
                         radius: 8,
-                        fillColor: markerColor,
+                        fillColor: categoryIcon.color,
                         color: '#fff',
                         weight: 2,
-                        opacity: 1,
                         fillOpacity: 0.8
-                    }).addTo(map);
-                    
-                    marker.bindPopup(`
+                    }).addTo(map).bindPopup(`
                         <strong>${report.title}</strong><br>
                         ${report.description || ''}<br>
                         <small>Status: ${report.status}</small>
                     `);
-                    
+                    // Attach report id to marker for later lookup
+                    marker.reportId = report.id;
                     markers.push(marker);
                 }
             });
         }
-        
-        async function verifyReport(reportId, type) {
-            if (!currentUser) {
-                alert('Please login to verify reports');
-                return;
-            }
-            
-            // Check if already verified this report
-            const { data: existing } = await supabase
-                .from('verifications')
-                .select('*')
-                .eq('report_id', reportId)
-                .eq('user_id', currentUser.id)
-                .single();
-            
-            if (existing) {
-                alert('You have already verified this report');
-                return;
-            }
-            
-            // Add verification
-            const { error } = await supabase
-                .from('verifications')
-                .insert([
-                    {
-                        report_id: reportId,
-                        user_id: currentUser.id,
-                        type: type
-                    }
-                ]);
-            
-            if (error) {
-                console.error('Error verifying report:', error);
-                return;
-            }
-            
-            // Update report counts
-            const updateField = type === 'confirm' ? 'confirmations' : 'flags';
-            const { data: report } = await supabase
-                .from('reports')
-                .select('confirmations, flags')
-                .eq('id', reportId)
-                .single();
-            
-            await supabase
-                .from('reports')
-                .update({
-                    [updateField]: report[updateField] + 1,
-                    is_verified: report.confirmations + 1 >= 3 // Verified if 3+ confirmations
-                })
-                .eq('id', reportId);
-            
-            // Update user trust score
+
+        function verifyReport(reportId, type) {
+            if (!currentUser) { alert('Login first'); return; }
+            const report = DB.reports.find(r => r.id === reportId);
+            if (!report) return;
+            const already = DB.verifications.find(v => v.report_id === reportId && v.user_id === currentUser.id);
+            if (already) { alert('You already verified this report'); return; }
+
+            DB.verifications.push({ report_id: reportId, user_id: currentUser.id, type, timestamp: new Date().toISOString() });
             if (type === 'confirm') {
-                await supabase
-                    .from('profiles')
-                    .update({
-                        reports_verified: userProfile.reports_verified + 1,
-                        trust_score: userProfile.trust_score + 5
-                    })
-                    .eq('id', currentUser.id);
-                
-                userProfile.trust_score += 5;
+                report.confirmations = (report.confirmations || 0) + 1;
+                if (report.confirmations >= 3) report.is_verified = true;
                 userProfile.reports_verified += 1;
+                userProfile.trust_score += 5;
                 document.getElementById('trustScoreBadge').textContent = `Score: ${userProfile.trust_score}`;
+            } else {
+                report.flags = (report.flags || 0) + 1;
             }
-            
-            alert(`Report ${type === 'confirm' ? 'confirmed' : 'flagged'} successfully!`);
-            loadReports();
+            saveDB();
+            alert(`Report ${type === 'confirm' ? 'confirmed' : 'flagged'}!`);
+            loadReports(); // refresh
         }
-        
-        async function loadCDFProjects() {
-            const { data: projects, error } = await supabase
-                .from('cdf_projects')
-                .select('*')
-                .order('created_at', { ascending: false });
-            
-            if (error) {
-                console.error('Error loading CDF projects:', error);
-                return;
-            }
-            
+
+        // ==================== CDF Projects ====================
+        function loadCDFProjects() {
             const container = document.getElementById('cdfProjects');
             container.innerHTML = '';
-            
-            projects.forEach(project => {
-                const projectElement = document.createElement('div');
-                projectElement.style.cssText = "background-color: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 16px;";
-                projectElement.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+            DB.cdf_projects.forEach(proj => {
+                const el = document.createElement('div');
+                el.style.cssText = "background:white;border-radius:16px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,0.08);margin-bottom:16px;";
+                el.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
                         <div>
-                            <h3 style="margin: 0 0 6px 0; font-size: 17px; font-weight: 700; color: #1e293b;">${project.title}</h3>
-                            <p style="margin: 0; font-size: 13px; color: #64748b;">
-                                ${project.description || ''}
-                            </p>
+                            <h3 style="margin:0 0 6px;font-size:17px;font-weight:700;color:#1e293b;">${proj.title}</h3>
+                            <p style="margin:0;font-size:13px;color:#64748b;">${proj.description || ''}</p>
                         </div>
-                        <span style="background-color: #fef3c7; color: #ea580c; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">
-                            ${project.progress}% Complete
-                        </span>
+                        <span style="background:#fef3c7;color:#ea580c;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;">${proj.progress}% Complete</span>
                     </div>
-                    
-                    <div style="margin-bottom: 20px;">
-                        <div style="height: 8px; background-color: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                            <div style="width: ${project.progress}%; height: 100%; background-color: #ea580c;"></div>
+                    <div style="margin-bottom:20px;">
+                        <div style="height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;">
+                            <div style="width:${proj.progress}%;height:100%;background:#ea580c;"></div>
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-top: 6px;">
-                            <span style="font-size: 11px; color: #64748b;">K ${(project.spent / 1000000).toFixed(2)}M spent</span>
-                            <span style="font-size: 11px; color: #64748b;">K ${(project.budget / 1000000).toFixed(2)}M budget</span>
+                        <div style="display:flex;justify-content:space-between;margin-top:6px;">
+                            <span style="font-size:11px;color:#64748b;">K ${(proj.spent/1000000).toFixed(2)}M spent</span>
+                            <span style="font-size:11px;color:#64748b;">K ${(proj.budget/1000000).toFixed(2)}M budget</span>
                         </div>
                     </div>
-                    
-                    <div style="font-size: 12px; color: #64748b;">
-                        <i class="fas fa-calendar" style="margin-right: 6px;"></i>
-                        ${new Date(project.start_date).toLocaleDateString()} - ${new Date(project.end_date).toLocaleDateString()}
-                    </div>
+                    <div style="font-size:12px;color:#64748b;"><i class="fas fa-calendar" style="margin-right:6px;"></i>${proj.start_date} - ${proj.end_date}</div>
                 `;
-                
-                container.appendChild(projectElement);
+                container.appendChild(el);
             });
         }
-        
-        async function loadUserStats() {
+
+        // ==================== User Profile ====================
+        function loadUserStats() {
             if (!userProfile) return;
-            
-            // Load user's reports
-            const { data: userReports } = await supabase
-                .from('reports')
-                .select('*')
-                .eq('user_id', currentUser.id)
-                .order('created_at', { ascending: false });
-            
-            // Update profile display
             document.getElementById('userInfo').innerHTML = `
-                <span style="background-color: #10b981; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;">
-                    Score: ${userProfile.trust_score}
-                </span>
-                <button onclick="showProfile()" style="background: none; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; color: #475569; font-size: 12px; cursor: pointer;">
-                    <i class="fas fa-user"></i> Profile
-                </button>
-                <button onclick="logout()" style="background: none; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; color: #ef4444; font-size: 12px; cursor: pointer;">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
+                <span style="background:#10b981;color:white;padding:4px 8px;border-radius:12px;font-size:12px;font-weight:600;">Score: ${userProfile.trust_score}</span>
+                <button onclick="showProfile()" style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:6px 12px;color:#475569;font-size:12px;cursor:pointer;"><i class="fas fa-user"></i> Profile</button>
+                <button onclick="logout()" style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:6px 12px;color:#ef4444;font-size:12px;cursor:pointer;"><i class="fas fa-sign-out-alt"></i></button>
             `;
         }
-        
+
         function showProfile() {
             if (!userProfile) return;
-            
             document.getElementById('profileContent').innerHTML = `
-                <div style="text-align: center; margin-bottom: 24px;">
-                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
-                        <i class="fas fa-user" style="color: white; font-size: 40px;"></i>
+                <div style="text-align:center;margin-bottom:24px;">
+                    <div style="width:80px;height:80px;background:linear-gradient(135deg,#2563eb,#1d4ed8);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                        <i class="fas fa-user" style="color:white;font-size:40px;"></i>
                     </div>
-                    <h3 style="margin: 0 0 8px 0; font-size: 20px; color: #1e293b;">${userProfile.full_name || 'Community Member'}</h3>
-                    <p style="margin: 0; color: #64748b;">${userProfile.phone}</p>
+                    <h3 style="margin:0 0 8px;font-size:20px;color:#1e293b;">${userProfile.full_name || 'Community Member'}</h3>
+                    <p style="margin:0;color:#64748b;">${userProfile.phone}</p>
                 </div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;">
-                    <div style="background-color: #f8fafc; border-radius: 12px; padding: 16px; text-align: center;">
-                        <div style="font-weight: 700; font-size: 24px; color: #2563eb;">${userProfile.trust_score}</div>
-                        <div style="font-size: 12px; color: #64748b;">Trust Score</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">
+                    <div style="background:#f8fafc;border-radius:12px;padding:16px;text-align:center;">
+                        <div style="font-weight:700;font-size:24px;color:#2563eb;">${userProfile.trust_score}</div>
+                        <div style="font-size:12px;color:#64748b;">Trust Score</div>
                     </div>
-                    
-                    <div style="background-color: #f8fafc; border-radius: 12px; padding: 16px; text-align: center;">
-                        <div style="font-weight: 700; font-size: 24px; color: #10b981;">${userProfile.reports_submitted}</div>
-                        <div style="font-size: 12px; color: #64748b;">Reports Submitted</div>
+                    <div style="background:#f8fafc;border-radius:12px;padding:16px;text-align:center;">
+                        <div style="font-weight:700;font-size:24px;color:#10b981;">${userProfile.reports_submitted}</div>
+                        <div style="font-size:12px;color:#64748b;">Submitted</div>
                     </div>
-                    
-                    <div style="background-color: #f8fafc; border-radius: 12px; padding: 16px; text-align: center;">
-                        <div style="font-weight: 700; font-size: 24px; color: #f59e0b;">${userProfile.reports_verified}</div>
-                        <div style="font-size: 12px; color: #64748b;">Reports Verified</div>
+                    <div style="background:#f8fafc;border-radius:12px;padding:16px;text-align:center;">
+                        <div style="font-weight:700;font-size:24px;color:#f59e0b;">${userProfile.reports_verified}</div>
+                        <div style="font-size:12px;color:#64748b;">Verified</div>
                     </div>
-                    
-                    <div style="background-color: #f8fafc; border-radius: 12px; padding: 16px; text-align: center;">
-                        <div style="font-weight: 700; font-size: 24px; color: #8b5cf6;">${Math.floor(userProfile.trust_score / 10)}</div>
-                        <div style="font-size: 12px; color: #64748b;">Community Level</div>
+                    <div style="background:#f8fafc;border-radius:12px;padding:16px;text-align:center;">
+                        <div style="font-weight:700;font-size:24px;color:#8b5cf6;">${Math.floor(userProfile.trust_score/10)}</div>
+                        <div style="font-size:12px;color:#64748b;">Level</div>
                     </div>
                 </div>
-                
-                <div style="background-color: #fef3c7; border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #f59e0b;">
-                    <h4 style="margin: 0 0 8px 0; font-size: 16px; color: #92400e;">
-                        <i class="fas fa-star" style="margin-right: 8px;"></i>Trust Score Benefits
-                    </h4>
-                    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #92400e;">
+                <div style="background:#fef3c7;border-radius:12px;padding:16px;margin-bottom:20px;border-left:4px solid #f59e0b;">
+                    <h4 style="margin:0 0 8px;font-size:16px;color:#92400e;"><i class="fas fa-star" style="margin-right:8px;"></i>Trust Score Benefits</h4>
+                    <ul style="margin:0;padding-left:20px;font-size:14px;color:#92400e;">
                         <li>Higher score = Faster community verification</li>
                         <li>Priority in CDF project discussions</li>
                         <li>Eligibility for community moderator role</li>
                     </ul>
                 </div>
-                
-                <button onclick="closeProfileModal()" style="width: 100%; background-color: #2563eb; color: white; border: none; border-radius: 12px; padding: 16px; font-size: 16px; font-weight: 600; cursor: pointer;">
-                    Close Profile
-                </button>
+                <button onclick="closeProfileModal()" style="width:100%;background:#2563eb;color:white;border:none;border-radius:12px;padding:16px;font-size:16px;font-weight:600;cursor:pointer;">Close</button>
             `;
-            
             document.getElementById('profileModal').style.display = 'flex';
         }
-        
+
         function closeProfileModal() {
             document.getElementById('profileModal').style.display = 'none';
         }
-        
+
         function showMyReports() {
-            // Filter to show only user's reports
             document.getElementById('reportFilter').value = 'nearby';
             loadReports('nearby');
-            alert('Showing reports near your location');
         }
-        
+
         function showSection(sectionId) {
-            // Scroll to section
             document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
         }
-        
-        // Helper Functions
+
+        // ==================== Helpers ====================
         function timeAgo(date) {
             const seconds = Math.floor((new Date() - date) / 1000);
-            
-            let interval = Math.floor(seconds / 31536000);
-            if (interval >= 1) return interval + "y ago";
-            
-            interval = Math.floor(seconds / 2592000);
-            if (interval >= 1) return interval + "mo ago";
-            
-            interval = Math.floor(seconds / 86400);
-            if (interval >= 1) return interval + "d ago";
-            
-            interval = Math.floor(seconds / 3600);
-            if (interval >= 1) return interval + "h ago";
-            
-            interval = Math.floor(seconds / 60);
-            if (interval >= 1) return interval + "m ago";
-            
-            return "Just now";
+            if (seconds < 60) return 'Just now';
+            const mins = Math.floor(seconds / 60);
+            if (mins < 60) return mins + 'm ago';
+            const hrs = Math.floor(mins / 60);
+            if (hrs < 24) return hrs + 'h ago';
+            const days = Math.floor(hrs / 24);
+            return days + 'd ago';
         }
-        
+
         function getStatusColor(status) {
-            const colors = {
-                'pending': '#f59e0b',
-                'in_progress': '#0ea5e9',
-                'resolved': '#10b981',
-                'rejected': '#ef4444'
-            };
-            return colors[status] || '#64748b';
+            return { pending: '#f59e0b', in_progress: '#0ea5e9', resolved: '#10b981', rejected: '#ef4444' }[status] || '#64748b';
         }
-        
         function getStatusBg(status) {
-            const colors = {
-                'pending': '#fef3c7',
-                'in_progress': '#e0f2fe',
-                'resolved': '#d1fae5',
-                'rejected': '#fee2e2'
-            };
-            return colors[status] || '#f1f5f9';
+            return { pending: '#fef3c7', in_progress: '#e0f2fe', resolved: '#d1fae5', rejected: '#fee2e2' }[status] || '#f1f5f9';
         }
-        
         function getStatusText(status) {
-            const texts = {
-                'pending': '🟡 Pending',
-                'in_progress': '🟠 In Progress',
-                'resolved': '✅ Resolved',
-                'rejected': '❌ Rejected'
-            };
-            return texts[status] || status;
+            return { pending: '🟡 Pending', in_progress: '🟠 In Progress', resolved: '✅ Resolved', rejected: '❌ Rejected' }[status] || status;
         }
-        
-        function checkAuth() {
-            // Check if session exists and is valid (less than 7 days old)
+
+        // ==================== Init ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            setupOTPInputs();
             const session = localStorage.getItem('chalala_session');
             if (session) {
-                const { timestamp } = JSON.parse(session);
-                const sessionAge = Date.now() - timestamp;
-                const sevenDays = 7 * 24 * 60 * 60 * 1000;
-                
-                if (sessionAge < sevenDays) {
-                    // Session is valid
-                    return true;
+                const { userId, phone, timestamp } = JSON.parse(session);
+                if (Date.now() - timestamp < 7 * 24 * 60 * 60 * 1000) {
+                    loginUser(userId, phone);
+                    document.getElementById('appContent').style.display = 'block';
                 } else {
-                    // Session expired
                     localStorage.removeItem('chalala_session');
+                    showAuthModal();
                 }
+            } else {
+                showAuthModal();
             }
-            return false;
-        }
-        
-        // Emergency function for demo (bypass auth)
-        function emergencyDemoMode() {
-            currentUser = { id: 'demo_user', phone: '+260970000000' };
-            userProfile = {
-                trust_score: 150,
-                reports_submitted: 5,
-                reports_verified: 12
-            };
-            
-            localStorage.setItem('chalala_session', JSON.stringify({
-                userId: 'demo_user',
-                phone: '+260970000000',
-                timestamp: Date.now()
-            }));
-            
-            document.getElementById('authModal').style.display = 'none';
-            document.getElementById('appContent').style.display = 'block';
-            document.getElementById('trustScoreBadge').textContent = `Score: 150`;
-            
-            initializeMap();
-            loadCommunityPulse();
-            loadReports();
-            loadCDFProjects();
-            
-            alert('Demo mode activated! Use phone: +260970000000');
-        }
-        
-        // Add emergency demo button (hidden in production)
-        setTimeout(() => {
-            const demoBtn = document.createElement('button');
-            demoBtn.innerHTML = '🚨 Demo Mode';
-            demoBtn.style.cssText = 'position: fixed; bottom: 80px; right: 16px; background: #ef4444; color: white; border: none; border-radius: 20px; padding: 10px 16px; font-size: 12px; z-index: 1000; cursor: pointer; box-shadow: 0 2px 8px rgba(239,68,68,0.3);';
-            demoBtn.onclick = emergencyDemoMode;
-            document.body.appendChild(demoBtn);
-        }, 2000);
+        });
+
+        // Additional dummy functions
+        function selectOnMap() { alert('Map selection not implemented in demo'); }
+        function resendOTP() { sendOTP(); }
     </script>
 
     <style>
-        /* Animation for modal */
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
-        
-        /* Leaflet map adjustments */
-        .leaflet-container {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        
-        /* Button hover effects */
-        button:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-            transition: all 0.2s ease;
-        }
-        
-        /* Modal animations */
-        #reportModal > div,
-        #profileModal > div,
-        #authModal > div {
-            animation: slideUp 0.3s ease-out;
-        }
-        
-        /* Responsive design */
-        @media (min-width: 768px) {
-            main {
-                max-width: 600px !important;
-                margin: 0 auto !important;
-            }
-        }
-        
-        /* Loading skeleton */
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-        
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .leaflet-container { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        button:hover { opacity: 0.9; transform: translateY(-1px); transition: all 0.2s ease; }
+        #reportModal > div, #profileModal > div, #authModal > div { animation: slideUp 0.3s ease-out; }
+        @media (min-width: 768px) { main { max-width: 600px !important; margin: 0 auto !important; } }
     </style>
 </body>
 </html>
