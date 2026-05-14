@@ -3,1055 +3,2173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chalala YaTU – Community Platform</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Leaflet CSS for Map -->
+    <title>Appyatu - Community Reporting Platform</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-</head>
-<body style="margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f5f7fa; color: #333;">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+    <style>
+        :root {
+            --primary: #1B5E20;
+            --primary-light: #2E7D32;
+            --primary-lighter: #4CAF50;
+            --accent: #FF6F00;
+            --accent-light: #FF8F00;
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --text: #1a1a2e;
+            --text-secondary: #555;
+            --border: #e0e0e0;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-xs: 8px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --danger: #d32f2f;
+            --success: #2E7D32;
+            --warning: #F9A825;
+            --info: #1565C0;
+            --zambia-green: #198a3b;
+            --zambia-red: #d22730;
+            --zambia-black: #1a1a1a;
+            --zambia-orange: #ef7d00;
+        }
 
-    <!-- AUTH MODAL (Hidden by default) -->
-    <div id="authModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.8); z-index: 2000; align-items: center; justify-content: center;">
-        <div style="background-color: white; border-radius: 20px; width: 90%; max-width: 400px; padding: 30px; position: relative;">
-            <button onclick="closeAuthModal()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; color: #64748b; cursor: pointer;">×</button>
-            
-            <div id="authStep1" style="text-align: center;">
-                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-                    <i class="fas fa-people-group" style="color: white; font-size: 40px;"></i>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #e8ecf1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Phone Frame */
+        .app-container {
+            width: 100%;
+            max-width: 430px;
+            height: 92vh;
+            max-height: 900px;
+            background: var(--bg);
+            border-radius: 28px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25), 0 0 0 2px #1a1a1a;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 460px) {
+            .app-container {
+                max-width: 100%;
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            body {
+                padding: 0;
+            }
+        }
+
+        /* Status Bar */
+        .status-bar {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+        .status-bar .time {
+            font-size: 12px;
+        }
+        .status-icons {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            font-size: 10px;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4CAF50;
+            display: inline-block;
+        }
+        .status-dot.offline {
+            background: #f44336;
+        }
+
+        /* Screen Container */
+        .screens-wrapper {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: var(--bg);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
+            padding: 20px;
+            padding-bottom: 90px;
+            opacity: 0;
+            transform: translateX(40px);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .screen.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+            z-index: 10;
+        }
+        .screen.slide-left {
+            transform: translateX(-40px);
+            opacity: 0;
+        }
+        .screen.no-transition {
+            transition: none;
+        }
+
+        /* Scrollbar */
+        .screen::-webkit-scrollbar {
+            width: 4px;
+        }
+        .screen::-webkit-scrollbar-thumb {
+            background: #c0c0c0;
+            border-radius: 4px;
+        }
+
+        /* ============ LOGIN SCREEN ============ */
+        .login-logo {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+        .login-logo .logo-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--zambia-green), #25a34a);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(25, 138, 59, 0.35);
+            margin-bottom: 8px;
+        }
+        .login-logo h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--zambia-green);
+            letter-spacing: -0.5px;
+        }
+        .login-logo .tagline {
+            font-size: 12px;
+            color: #777;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .login-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 28px 22px;
+            box-shadow: var(--shadow-lg);
+            margin-top: 15px;
+        }
+        .login-card .anon-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #f5f5f5;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #555;
+            font-weight: 500;
+            margin-bottom: 18px;
+        }
+        .anon-badge .shield-icon {
+            font-size: 18px;
+        }
+        .field-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #888;
+            margin-bottom: 6px;
+        }
+        .phone-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: #f9fafb;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-xs);
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+        }
+        .phone-input-wrapper:focus-within {
+            border-color: var(--zambia-green);
+            box-shadow: 0 0 0 4px rgba(25, 138, 59, 0.08);
+        }
+        .prefix {
+            background: #e8f5e9;
+            padding: 14px 12px;
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--zambia-green);
+            white-space: nowrap;
+            border-right: 2px solid #c8e6c9;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+        }
+        .phone-input {
+            flex: 1;
+            border: none;
+            padding: 14px 12px;
+            font-size: 16px;
+            background: transparent;
+            outline: none;
+            color: var(--text);
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+        .phone-input::placeholder {
+            color: #bbb;
+            letter-spacing: 0.5px;
+            font-weight: 400;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: var(--radius-xs);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary {
+            background: var(--zambia-green);
+            color: #fff;
+            margin-top: 16px;
+            box-shadow: 0 4px 16px rgba(25, 138, 59, 0.3);
+        }
+        .btn-primary:hover {
+            background: #157a2e;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(25, 138, 59, 0.4);
+        }
+        .btn-primary:active {
+            transform: scale(0.97);
+            transition: 0.1s;
+        }
+        .btn-primary:disabled {
+            background: #b0b0b0;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-outline {
+            background: #fff;
+            color: var(--zambia-green);
+            border: 2px solid var(--zambia-green);
+            margin-top: 10px;
+        }
+        .btn-sm {
+            padding: 10px 20px;
+            font-size: 13px;
+            width: auto;
+            display: inline-block;
+            border-radius: 20px;
+        }
+
+        /* ============ OTP SCREEN ============ */
+        .otp-header {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .otp-header .icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+        .otp-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .otp-header p {
+            font-size: 13px;
+            color: #888;
+            margin-top: 4px;
+        }
+        .otp-phone-display {
+            font-weight: 700;
+            color: var(--zambia-green);
+            font-size: 15px;
+            margin: 6px 0;
+        }
+        .otp-boxes {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 24px 0;
+        }
+        .otp-box {
+            width: 48px;
+            height: 56px;
+            border: 2px solid #d0d0d0;
+            border-radius: var(--radius-xs);
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            background: #fff;
+            color: var(--text);
+            transition: var(--transition);
+            outline: none;
+        }
+        .otp-box:focus {
+            border-color: var(--zambia-green);
+            box-shadow: 0 0 0 4px rgba(25, 138, 59, 0.08);
+            transform: translateY(-2px);
+        }
+        .otp-box.filled {
+            border-color: var(--zambia-green);
+            background: #f1f8e9;
+        }
+        .resend-link {
+            text-align: center;
+            font-size: 13px;
+            color: #888;
+            margin-top: 8px;
+        }
+        .resend-link span {
+            color: var(--zambia-green);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .timer {
+            font-weight: 600;
+            color: #555;
+        }
+
+        /* ============ INTRO SCREEN ============ */
+        .intro-header {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .intro-header .welcome-icon {
+            font-size: 60px;
+            animation: bounce 1s ease infinite;
+        }
+        @keyframes bounce {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+        .intro-header h2 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text);
+            margin-top: 8px;
+        }
+        .intro-header .subtitle {
+            font-size: 13px;
+            color: #777;
+        }
+        .location-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin: 16px 0;
+            border-left: 4px solid var(--zambia-green);
+        }
+        .location-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .location-row:last-child {
+            border-bottom: none;
+        }
+        .location-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .location-icon.province {
+            background: #e3f2fd;
+            color: #1565C0;
+        }
+        .location-icon.constituency {
+            background: #fff3e0;
+            color: #ef7d00;
+        }
+        .location-icon.ward {
+            background: #e8f5e9;
+            color: #2E7D32;
+        }
+        .location-info .loc-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #999;
+            font-weight: 600;
+        }
+        .location-info .loc-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .check-badge {
+            display: inline-block;
+            color: #4CAF50;
+            font-size: 14px;
+            margin-left: 4px;
+        }
+
+        /* Confirmation Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-dialog {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 24px;
+            max-width: 360px;
+            width: 90%;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+        .modal-dialog .modal-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .modal-dialog h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .modal-dialog p {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+        }
+        .modal-btns .btn {
+            flex: 1;
+            margin-top: 0;
+        }
+
+        /* ============ HOME SCREEN ============ */
+        .home-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .home-header .greeting {
+            font-size: 13px;
+            color: #888;
+            font-weight: 500;
+        }
+        .home-header .app-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--zambia-green);
+            letter-spacing: -0.5px;
+        }
+        .home-header .header-icons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+        .icon-btn:hover {
+            transform: scale(1.05);
+        }
+        .notif-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #d32f2f;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .location-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e8f5e9;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--zambia-green);
+            margin-bottom: 12px;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .stat-card {
+            flex: 1;
+            background: #fff;
+            border-radius: var(--radius-sm);
+            padding: 14px 12px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        .stat-card .stat-num {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text);
+        }
+        .stat-card .stat-label {
+            font-size: 10px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+        .stat-card.received .stat-num {
+            color: #1565C0;
+        }
+        .stat-card.in-progress .stat-num {
+            color: #ef7d00;
+        }
+        .stat-card.resolved .stat-num {
+            color: #2E7D32;
+        }
+
+        /* Mini Map */
+        .mini-map-container {
+            background: #fff;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 14px;
+            height: 180px;
+            position: relative;
+        }
+        .mini-map-container .map-label {
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            z-index: 5;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        #homeMiniMap {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--zambia-green);
+        }
+
+        /* Report Cards */
+        .report-card {
+            background: #fff;
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+        .report-card:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+        .report-card.status-received {
+            border-left-color: #1565C0;
+        }
+        .report-card.status-progress {
+            border-left-color: #ef7d00;
+        }
+        .report-card.status-resolved {
+            border-left-color: #2E7D32;
+        }
+        .report-card .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .report-card .report-title {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text);
+        }
+        .report-card .report-status {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 12px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .status-badge-received {
+            background: #e3f2fd;
+            color: #1565C0;
+        }
+        .status-badge-progress {
+            background: #fff3e0;
+            color: #ef7d00;
+        }
+        .status-badge-resolved {
+            background: #e8f5e9;
+            color: #2E7D32;
+        }
+        .report-card .report-meta {
+            font-size: 11px;
+            color: #999;
+            margin-top: 6px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .vote-btns {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .vote-btn {
+            background: none;
+            border: 1px solid #e0e0e0;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: #888;
+        }
+        .vote-btn:hover {
+            background: #f5f5f5;
+            border-color: #ccc;
+        }
+        .vote-btn.upvoted {
+            background: #e8f5e9;
+            border-color: #4CAF50;
+            color: #2E7D32;
+        }
+        .vote-count {
+            font-weight: 700;
+            font-size: 13px;
+            color: #555;
+        }
+
+        /* News Card */
+        .news-card {
+            background: linear-gradient(135deg, #fff9e6, #fff);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow);
+            border-left: 3px solid var(--accent);
+        }
+        .news-card .news-tag {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .news-card .news-title {
+            font-weight: 700;
+            font-size: 14px;
+            margin: 4px 0;
+            color: var(--text);
+        }
+        .news-card .news-excerpt {
+            font-size: 12px;
+            color: #777;
+            line-height: 1.4;
+        }
+
+        /* CDF Card */
+        .cdf-card {
+            background: #fff;
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 14px;
+            border-top: 3px solid var(--zambia-green);
+        }
+        .cdf-card h4 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        .cdf-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+        .cdf-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #2E7D32);
+            border-radius: 5px;
+            transition: width 0.6s ease;
+        }
+        .cdf-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #777;
+            margin-top: 4px;
+        }
+        .cdf-stats strong {
+            color: var(--text);
+        }
+
+        /* ============ BOTTOM NAV ============ */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            display: flex;
+            border-top: 1px solid #eee;
+            z-index: 50;
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+            flex-shrink: 0;
+            height: 64px;
+        }
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            gap: 2px;
+            color: #999;
+            font-size: 10px;
+            font-weight: 500;
+            border: none;
+            background: none;
+            padding: 6px 0;
+            position: relative;
+        }
+        .nav-item .nav-icon {
+            font-size: 20px;
+            transition: var(--transition);
+        }
+        .nav-item.active {
+            color: var(--zambia-green);
+        }
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 30px;
+            height: 3px;
+            background: var(--zambia-green);
+            border-radius: 0 0 3px 3px;
+        }
+        .nav-item:active {
+            transform: scale(0.9);
+        }
+
+        /* FAB */
+        .fab {
+            position: absolute;
+            bottom: 80px;
+            right: 20px;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            font-size: 26px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(255, 111, 0, 0.4);
+            z-index: 40;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .fab:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 28px rgba(255, 111, 0, 0.5);
+        }
+        .fab:active {
+            transform: scale(0.9);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            white-space: nowrap;
+        }
+        .toast.show {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.success {
+            background: #2E7D32;
+        }
+        .toast.error {
+            background: #d32f2f;
+        }
+
+        /* Offline Banner */
+        .offline-banner {
+            background: #fff3e0;
+            color: #ef7d00;
+            text-align: center;
+            padding: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            display: none;
+            letter-spacing: 0.5px;
+        }
+        .offline-banner.show {
+            display: block;
+        }
+
+        /* Report Form */
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #666;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--radius-xs);
+            font-size: 14px;
+            font-family: inherit;
+            transition: var(--transition);
+            background: #fff;
+            resize: vertical;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--zambia-green);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(25, 138, 59, 0.06);
+        }
+        .file-upload-area {
+            border: 2px dashed #d0d0d0;
+            border-radius: var(--radius-xs);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: #fafafa;
+        }
+        .file-upload-area:hover {
+            border-color: var(--zambia-green);
+            background: #f5faf6;
+        }
+        .file-upload-area .upload-icon {
+            font-size: 32px;
+            margin-bottom: 4px;
+        }
+        .file-upload-area p {
+            font-size: 12px;
+            color: #888;
+        }
+        .preview-thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 4px;
+            display: none;
+        }
+
+        /* Directory Card */
+        .dir-card {
+            background: #fff;
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            margin-bottom: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .dir-card:hover {
+            transform: translateY(-1px);
+        }
+        .dir-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .dir-icon.clinic {
+            background: #fce4ec;
+            color: #d81b60;
+        }
+        .dir-icon.school {
+            background: #e3f2fd;
+            color: #1565C0;
+        }
+        .dir-icon.police {
+            background: #e8eaf6;
+            color: #283593;
+        }
+        .dir-icon.rep {
+            background: #fff3e0;
+            color: #ef7d00;
+        }
+        .dir-info .dir-name {
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .dir-info .dir-contact {
+            font-size: 11px;
+            color: #888;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #aaa;
+        }
+        .empty-state .empty-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        /* Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .spinner.dark {
+            border-color: #555;
+            border-top-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container" id="appContainer">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <span class="time" id="statusTime">09:41</span>
+            <span style="font-weight:700;letter-spacing:1px;">Appyatu</span>
+            <span class="status-icons">
+                <span class="status-dot" id="onlineDot" title="Online"></span>
+                <span>📶</span>
+                <span>🔋</span>
+            </span>
+        </div>
+        <div class="offline-banner" id="offlineBanner">⚠️ You are offline — drafts saved locally</div>
+
+        <!-- Screens -->
+        <div class="screens-wrapper" id="screensWrapper">
+            <!-- SCREEN 0: LOGIN -->
+            <div class="screen active" id="screenLogin">
+                <div class="login-logo">
+                    <div class="logo-icon">🌍</div>
+                    <h1>Appyatu</h1>
+                    <p class="tagline">Community Voices • Real Impact</p>
                 </div>
-                <h2 style="margin: 0 0 10px 0; color: #1e293b;">Welcome to Chalala YaTU</h2>
-                <p style="color: #64748b; margin-bottom: 30px;">Community verification required. Enter your phone number to continue.</p>
-                
-                <div style="margin-bottom: 20px;">
-                    <input type="tel" id="phoneInput" placeholder="+260 97 123 4567" style="width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 16px; box-sizing: border-box;">
-                    <p style="font-size: 12px; color: #64748b; text-align: left; margin-top: 5px;">We'll send a one-time verification code</p>
-                </div>
-                
-                <button onclick="sendOTP()" style="width: 100%; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border: none; border-radius: 12px; padding: 16px; font-size: 16px; font-weight: 600; cursor: pointer;">
-                    Send Verification Code
-                </button>
-                
-                <div style="margin-top: 20px; padding: 15px; background-color: #f8fafc; border-radius: 12px;">
-                    <h4 style="margin: 0 0 10px 0; color: #475569; font-size: 14px;">📱 Why Phone Verification?</h4>
-                    <p style="margin: 0; font-size: 12px; color: #64748b;">
-                        • Prevents fake reports<br>
-                        • Ensures only Chalala residents participate<br>
-                        • Protects community data integrity
+                <div class="login-card">
+                    <div class="anon-badge">
+                        <span class="shield-icon">🛡️</span> Anonymous Reporting
+                    </div>
+                    <p style="font-size:13px;color:#555;margin-bottom:6px;font-weight:600;">You are reporting as:</p>
+                    <div style="background:#f9fafb;padding:10px 14px;border-radius:8px;font-weight:700;font-size:15px;color:#1a1a2e;margin-bottom:16px;">
+                        👤 User <span style="font-size:11px;color:#999;font-weight:400;">(Anonymous)</span>
+                    </div>
+                    <div class="field-label">📱 Zambia Phone Number</div>
+                    <div class="phone-input-wrapper">
+                        <span class="prefix">+260</span>
+                        <input type="tel" class="phone-input" id="phoneInput" placeholder="97 123 4567" maxlength="9" inputmode="numeric" pattern="[0-9]*" autocomplete="tel">
+                    </div>
+                    <button class="btn btn-primary" id="btnSendOTP" disabled>
+                        📤 Send OTP Code
+                    </button>
+                    <p style="text-align:center;font-size:10px;color:#aaa;margin-top:10px;">
+                        By continuing, you agree to our Terms & Privacy Policy
                     </p>
                 </div>
             </div>
-            
-            <div id="authStep2" style="display: none; text-align: center;">
-                <h2 style="margin: 0 0 20px 0; color: #1e293b;">Enter Verification Code</h2>
-                <p style="color: #64748b; margin-bottom: 20px;">We sent a 6-digit code to <span id="phoneNumberDisplay"></span></p>
-                
-                <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
-                    <input type="text" id="otp1" maxlength="1" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border: 2px solid #cbd5e1; border-radius: 10px;">
-                    <input type="text" id="otp2" maxlength="1" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border: 2px solid #cbd5e1; border-radius: 10px;">
-                    <input type="text" id="otp3" maxlength="1" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border: 2px solid #cbd5e1; border-radius: 10px;">
-                    <input type="text" id="otp4" maxlength="1" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border: 2px solid #cbd5e1; border-radius: 10px;">
-                    <input type="text" id="otp5" maxlength="1" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border: 2px solid #cbd5e1; border-radius: 10px;">
-                    <input type="text" id="otp6" maxlength="1" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border: 2px solid #cbd5e1; border-radius: 10px;">
+
+            <!-- SCREEN 1: OTP VERIFICATION -->
+            <div class="screen" id="screenOTP">
+                <button class="icon-btn" id="btnBackOTP" style="margin-bottom:10px;">←</button>
+                <div class="otp-header">
+                    <div class="icon">🔐</div>
+                    <h3>Verify Your Number</h3>
+                    <p>We sent a 6-digit code to</p>
+                    <div class="otp-phone-display" id="otpPhoneDisplay">+260 ---</div>
                 </div>
-                
-                <button onclick="verifyOTP()" style="width: 100%; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 12px; padding: 16px; font-size: 16px; font-weight: 600; margin-bottom: 15px; cursor: pointer;">
-                    Verify & Continue
+                <div class="otp-boxes" id="otpBoxes">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="0">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="1">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="2">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="3">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="4">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="5">
+                </div>
+                <button class="btn btn-primary" id="btnVerifyOTP">✅ Verify & Continue</button>
+                <div class="resend-link">
+                    Didn't get the code? <span id="resendLink">Resend</span> &nbsp;|&nbsp;
+                    <span class="timer" id="otpTimer">30s</span>
+                </div>
+                <p style="text-align:center;font-size:10px;color:#ccc;margin-top:12px;">Demo: any 6 digits work</p>
+            </div>
+
+            <!-- SCREEN 2: INTRO / WELCOME -->
+            <div class="screen" id="screenIntro">
+                <div class="intro-header">
+                    <div class="welcome-icon">🎉</div>
+                    <h2>Welcome to Appyatu!</h2>
+                    <p class="subtitle">Your community connection in Zambia</p>
+                </div>
+                <div class="location-card">
+                    <p style="font-weight:700;font-size:13px;color:#555;margin-bottom:10px;">📍 Your Location (Pre-selected):</p>
+                    <div class="location-row">
+                        <div class="location-icon province">🏛️</div>
+                        <div class="location-info">
+                            <span class="loc-label">Province</span>
+                            <span class="loc-value">Lusaka Province <span class="check-badge">✓</span></span>
+                        </div>
+                    </div>
+                    <div class="location-row">
+                        <div class="location-icon constituency">🏘️</div>
+                        <div class="location-info">
+                            <span class="loc-label">Constituency</span>
+                            <span class="loc-value">Kabwata <span class="check-badge">✓</span></span>
+                        </div>
+                    </div>
+                    <div class="location-row">
+                        <div class="location-icon ward">📍</div>
+                        <div class="location-info">
+                            <span class="loc-label">Ward</span>
+                            <span class="loc-value">Chalala <span class="check-badge">✓</span></span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="btnConfirmLocation">
+                    ✅ Confirm & Join Community
                 </button>
-                
-                <button onclick="resendOTP()" style="background: none; border: none; color: #2563eb; font-size: 14px; cursor: pointer;">
-                    Resend Code (30s)
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MAIN APP CONTENT (Initially hidden) -->
-    <div id="appContent" style="display: none;">
-        <!-- TOP NAVIGATION -->
-        <header style="position: sticky; top: 0; z-index: 100; background-color: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px;">
-                <!-- Logo & Title -->
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-people-group" style="color: white; font-size: 20px;"></i>
-                    </div>
-                    <div>
-                        <h1 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Chalala <span style="color: #2563eb;">YaTU</span></h1>
-                        <p style="margin: 0; font-size: 11px; color: #64748b;">Our Community, Our Voice</p>
-                    </div>
-                </div>
-                
-                <!-- User Info -->
-                <div id="userInfo" style="display: flex; align-items: center; gap: 10px;">
-                    <span id="trustScoreBadge" style="background-color: #10b981; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;">Score: 100</span>
-                    <button onclick="logout()" style="background: none; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; color: #64748b; font-size: 12px; cursor: pointer;">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Stats Bar -->
-            <div style="background-color: #dbeafe; padding: 10px 16px; border-top: 1px solid #bfdbfe; display: flex; justify-content: space-between;">
-                <div style="text-align: center;">
-                    <div id="activeReports" style="font-weight: 700; font-size: 18px; color: #1e40af;">0</div>
-                    <div style="font-size: 11px; color: #475569;">Active</div>
-                </div>
-                <div style="text-align: center;">
-                    <div id="resolvedReports" style="font-weight: 700; font-size: 18px; color: #16a34a;">0</div>
-                    <div style="font-size: 11px; color: #475569;">Resolved</div>
-                </div>
-                <div style="text-align: center;">
-                    <div id="totalReports" style="font-weight: 700; font-size: 18px; color: #ea580c;">0</div>
-                    <div style="font-size: 11px; color: #475569;">Total</div>
-                </div>
-            </div>
-        </header>
-
-        <!-- MAIN CONTENT -->
-        <main style="padding: 16px; max-width: 500px; margin: 0 auto;">
-            
-            <!-- Community Pulse Section -->
-            <section id="communityPulse" style="margin-bottom: 30px;">
-                <div style="background: linear-gradient(135deg, #e0f2fe, #bae6fd); border-radius: 16px; padding: 20px; border: 1px solid #7dd3fc;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <h2 style="margin: 0; font-size: 18px; font-weight: 700; color: #0c4a6e;">
-                            <i class="fas fa-thermometer-half" style="margin-right: 8px;"></i>Community Pulse
-                        </h2>
-                        <span style="background-color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; color: #475569;">Live Results</span>
-                    </div>
-                    
-                    <!-- Current Question -->
-                    <div id="currentQuestion" style="background-color: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
-                        <!-- Question loaded via JS -->
-                    </div>
-                    
-                    <!-- Sentiment Reactions -->
-                    <div style="margin-bottom: 12px;">
-                        <div id="sentimentChart">
-                            <!-- Reactions loaded via JS -->
-                        </div>
-                    </div>
-                    
-                    <!-- Add Comment -->
-                    <div style="margin-top: 16px;">
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" id="commentInput" placeholder="Add your comment..." style="flex: 1; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; font-size: 13px;">
-                            <button onclick="addComment()" style="background-color: #2563eb; color: white; border: none; border-radius: 10px; padding: 10px 16px; font-weight: 600; font-size: 13px; cursor: pointer;">Post</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Local Representatives (NEW) -->
-            <section style="margin-bottom: 30px;">
-                <h2 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 700; color: #1e293b;">
-                    <i class="fas fa-user-tie" style="margin-right: 8px; color: #8b5cf6;"></i>Your Local Representatives
-                </h2>
-                <div style="display: flex; flex-direction: column; gap: 12px;">
-                    <!-- MP Kabwata -->
-                    <div style="background-color: white; border-radius: 16px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 16px;">
-                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 30px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;">
-                            <i class="fas fa-landmark"></i>
-                        </div>
-                        <div>
-                            <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 700; color: #1e293b;">Hon. Andrew Banda</h3>
-                            <p style="margin: 0 0 4px 0; font-size: 13px; color: #64748b;">Member of Parliament, Kabwata</p>
-                            <p style="margin: 0; font-size: 12px; color: #475569;"><i class="fas fa-phone-alt" style="margin-right: 6px;"></i> +260 977 123456 · kabwata@parliament.gov.zm</p>
-                        </div>
-                    </div>
-                    <!-- Councilor Chalala -->
-                    <div style="background-color: white; border-radius: 16px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 16px;">
-                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 30px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div>
-                            <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 700; color: #1e293b;">Cllr. Margaret Tembo</h3>
-                            <p style="margin: 0 0 4px 0; font-size: 13px; color: #64748b;">Ward Councilor, Chalala</p>
-                            <p style="margin: 0; font-size: 12px; color: #475569;"><i class="fas fa-phone-alt" style="margin-right: 6px;"></i> +260 955 789012 · chalala@lcc.gov.zm</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Interactive Map -->
-            <section id="mapSection" style="margin-bottom: 30px;">
-                <h2 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 700; color: #1e293b;">
-                    <i class="fas fa-map-marked-alt" style="margin-right: 8px; color: #10b981;"></i>Live Community Map
-                </h2>
-                
-                <!-- Map Container -->
-                <div id="map" style="height: 350px; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></div>
-                
-                <!-- Map Controls -->
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <button onclick="filterMap('all')" style="flex: 1; background-color: #2563eb; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer;">All</button>
-                    <button onclick="filterMap('security')" style="flex: 1; background-color: #ef4444; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer;">Security</button>
-                    <button onclick="filterMap('water')" style="flex: 1; background-color: #0ea5e9; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer;">Water</button>
-                </div>
-            </section>
-
-            <!-- Quick Report Section (includes new "General" category) -->
-            <section style="margin-bottom: 30px;">
-                <h2 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 700; color: #1e293b;">
-                    <i class="fas fa-exclamation-triangle" style="margin-right: 8px; color: #ef4444;"></i>Quick Report
-                </h2>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <!-- Security -->
-                    <button onclick="quickReport('security')" style="background-color: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: none; border-left: 4px solid #ef4444; cursor: pointer; text-align: left;">
-                        <div style="width: 40px; height: 40px; background-color: #fee2e2; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
-                            <i class="fas fa-shield-alt" style="color: #ef4444; font-size: 18px;"></i>
-                        </div>
-                        <h3 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 600; color: #1e293b;">Security Issue</h3>
-                        <p style="margin: 0; font-size: 12px; color: #64748b;">Crime, suspicious activity</p>
-                    </button>
-                    
-                    <!-- Water -->
-                    <button onclick="quickReport('water')" style="background-color: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: none; border-left: 4px solid #0ea5e9; cursor: pointer; text-align: left;">
-                        <div style="width: 40px; height: 40px; background-color: #e0f2fe; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
-                            <i class="fas fa-tint" style="color: #0ea5e9; font-size: 18px;"></i>
-                        </div>
-                        <h3 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 600; color: #1e293b;">Water Problem</h3>
-                        <p style="margin: 0; font-size: 12px; color: #64748b;">Shortage, contamination</p>
-                    </button>
-                    
-                    <!-- Roads -->
-                    <button onclick="quickReport('roads')" style="background-color: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: none; border-left: 4px solid #f59e0b; cursor: pointer; text-align: left;">
-                        <div style="width: 40px; height: 40px; background-color: #fef3c7; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
-                            <i class="fas fa-road" style="color: #f59e0b; font-size: 18px;"></i>
-                        </div>
-                        <h3 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 600; color: #1e293b;">Roads & Flooding</h3>
-                        <p style="margin: 0; font-size: 12px; color: #64748b;">Potholes, drainage</p>
-                    </button>
-                    
-                    <!-- Waste -->
-                    <button onclick="quickReport('waste')" style="background-color: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: none; border-left: 4px solid #10b981; cursor: pointer; text-align: left;">
-                        <div style="width: 40px; height: 40px; background-color: #d1fae5; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
-                            <i class="fas fa-trash" style="color: #10b981; font-size: 18px;"></i>
-                        </div>
-                        <h3 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 600; color: #1e293b;">Waste Issue</h3>
-                        <p style="margin: 0; font-size: 12px; color: #64748b;">Dumping, collection</p>
-                    </button>
-
-                    <!-- NEW: General Issue -->
-                    <button onclick="quickReport('general')" style="background-color: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: none; border-left: 4px solid #8b5cf6; cursor: pointer; text-align: left;">
-                        <div style="width: 40px; height: 40px; background-color: #ede9fe; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
-                            <i class="fas fa-comment" style="color: #8b5cf6; font-size: 18px;"></i>
-                        </div>
-                        <h3 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 600; color: #1e293b;">General Issue</h3>
-                        <p style="margin: 0; font-size: 12px; color: #64748b;">Feedback, suggestions, etc.</p>
-                    </button>
-                </div>
-            </section>
-
-            <!-- Recent Reports -->
-            <section id="recentReports" style="margin-bottom: 30px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <h2 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">
-                        <i class="fas fa-history" style="margin-right: 8px; color: #8b5cf6;"></i>Recent Reports
-                    </h2>
-                    <select id="reportFilter" onchange="loadReports()" style="background-color: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 6px 12px; font-size: 13px; color: #475569; cursor: pointer;">
-                        <option value="7days">Last 7 days</option>
-                        <option value="verified">Verified Only</option>
-                        <option value="nearby">Near Me</option>
-                    </select>
-                </div>
-                
-                <div id="reportsList" style="background-color: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
-                    <!-- Reports loaded via JS -->
-                </div>
-            </section>
-
-            <!-- CDF Tracker -->
-            <section id="cdfTracker" style="margin-bottom: 30px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <h2 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">
-                        <i class="fas fa-chart-line" style="margin-right: 8px; color: #ea580c;"></i>CDF Project Tracker
-                    </h2>
-                    <button onclick="loadCDFProjects()" style="background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 500; cursor: pointer;">
-                        Refresh
-                    </button>
-                </div>
-                
-                <div id="cdfProjects">
-                    <!-- CDF projects loaded via JS -->
-                </div>
-            </section>
-        </main>
-
-        <!-- BOTTOM NAVIGATION -->
-        <nav style="position: fixed; bottom: 0; left: 0; right: 0; background-color: white; border-top: 1px solid #e2e8f0; padding: 12px 16px; display: flex; justify-content: space-around; z-index: 100;">
-            <button onclick="showSection('communityPulse')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; color: #2563eb; cursor: pointer;">
-                <i class="fas fa-home" style="font-size: 20px; margin-bottom: 4px;"></i>
-                <span style="font-size: 10px; font-weight: 500;">Home</span>
-            </button>
-            
-            <button onclick="showSection('mapSection')" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; color: #64748b; cursor: pointer;">
-                <i class="fas fa-map" style="font-size: 20px; margin-bottom: 4px;"></i>
-                <span style="font-size: 10px; font-weight: 500;">Map</span>
-            </button>
-            
-            <button onclick="openReportModal()" style="width: 60px; height: 60px; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border: none; border-radius: 50%; margin-top: -30px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); display: flex; align-items: center; justify-content: center; cursor: pointer;">
-                <i class="fas fa-plus" style="font-size: 24px;"></i>
-            </button>
-            
-            <button onclick="showMyReports()" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; color: #64748b; cursor: pointer;">
-                <i class="fas fa-flag" style="font-size: 20px; margin-bottom: 4px;"></i>
-                <span style="font-size: 10px; font-weight: 500;">My Reports</span>
-            </button>
-            
-            <button onclick="showProfile()" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; color: #64748b; cursor: pointer;">
-                <i class="fas fa-user" style="font-size: 20px; margin-bottom: 4px;"></i>
-                <span style="font-size: 10px; font-weight: 500;">Profile</span>
-            </button>
-        </nav>
-    </div>
-
-    <!-- REPORT MODAL (updated with General category) -->
-    <div id="reportModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center;">
-        <div style="background-color: white; border-radius: 20px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; padding: 24px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin: 0; font-size: 20px; font-weight: 700; color: #1e293b;">Report Issue</h2>
-                <button onclick="closeReportModal()" style="background: none; border: none; font-size: 24px; color: #64748b; cursor: pointer;">×</button>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #475569;">Category</label>
-                <select id="reportCategory" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 16px;">
-                    <option value="security">Security</option>
-                    <option value="water">Water & Sanitation</option>
-                    <option value="roads">Roads & Flooding</option>
-                    <option value="waste">Waste Management</option>
-                    <option value="general">General / Community Feedback</option>
-                </select>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #475569;">Title</label>
-                <input type="text" id="reportTitle" placeholder="Brief description of issue" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 16px;">
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #475569;">Description</label>
-                <textarea id="reportDescription" placeholder="Provide more details..." rows="3" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 16px; resize: vertical;"></textarea>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #475569;">Location</label>
-                <div style="display: flex; gap: 10px;">
-                    <button onclick="getCurrentLocation()" style="flex: 1; background-color: #2563eb; color: white; border: none; border-radius: 10px; padding: 12px; font-weight: 600; cursor: pointer;">
-                        <i class="fas fa-location-arrow"></i> Use My Location
-                    </button>
-                    <button onclick="selectOnMap()" style="width: 50px; background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 10px; cursor: pointer;">
-                        <i class="fas fa-map-marker-alt"></i>
-                    </button>
-                </div>
-                <div id="locationStatus" style="margin-top: 8px; font-size: 14px; color: #64748b;"></div>
-                <input type="hidden" id="reportLatitude">
-                <input type="hidden" id="reportLongitude">
-            </div>
-            
-            <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; padding: 16px; background-color: #f8fafc; border-radius: 12px;">
-                <div>
-                    <h4 style="margin: 0 0 4px 0; font-size: 15px; font-weight: 600; color: #1e293b;">Anonymous Report</h4>
-                    <p style="margin: 0; font-size: 13px; color: #64748b;">Your name won't be shown</p>
-                </div>
-                <label style="position: relative; display: inline-block; width: 52px; height: 28px;">
-                    <input type="checkbox" id="anonymousToggle" checked style="opacity: 0; width: 0; height: 0;">
-                    <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #10b981; border-radius: 34px; transition: .4s;">
-                        <span style="position: absolute; left: 4px; bottom: 4px; width: 20px; height: 20px; background-color: white; border-radius: 50%; transition: .4s;"></span>
-                    </span>
-                </label>
-            </div>
-            
-            <button onclick="submitReport()" id="submitReportBtn" style="width: 100%; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border: none; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer;">
-                Submit Report
-            </button>
-            
-            <div id="rateLimitWarning" style="display: none; margin-top: 15px; padding: 12px; background-color: #fef3c7; border-radius: 10px; border-left: 4px solid #f59e0b;">
-                <p style="margin: 0; font-size: 14px; color: #92400e;">
-                    <i class="fas fa-clock" style="margin-right: 8px;"></i>
-                    Rate limit: One report every 15 minutes. Please wait before submitting another.
+                <p style="text-align:center;font-size:11px;color:#aaa;margin-top:8px;">
+                    You can change your location later in settings
                 </p>
             </div>
+
+            <!-- SCREEN 3: HOME DASHBOARD -->
+            <div class="screen" id="screenHome">
+                <div class="home-header">
+                    <div>
+                        <span class="greeting">👋 Welcome back,</span>
+                        <div class="app-title">Appyatu</div>
+                    </div>
+                    <div class="header-icons">
+                        <button class="icon-btn" id="btnNotifications" title="Notifications">🔔<span class="notif-badge">3</span></button>
+                        <button class="icon-btn" id="btnRefresh" title="Refresh">🔄</button>
+                    </div>
+                </div>
+                <div class="location-chip">📍 Lusaka Province • Kabwata • Chalala Ward</div>
+
+                <!-- Stats -->
+                <div class="stats-row">
+                    <div class="stat-card received">
+                        <div class="stat-num" id="statReceived">12</div>
+                        <div class="stat-label">📥 Received</div>
+                    </div>
+                    <div class="stat-card in-progress">
+                        <div class="stat-num" id="statInProgress">7</div>
+                        <div class="stat-label">🔧 In Progress</div>
+                    </div>
+                    <div class="stat-card resolved">
+                        <div class="stat-num" id="statResolved">23</div>
+                        <div class="stat-label">✅ Resolved</div>
+                    </div>
+                </div>
+
+                <!-- Mini Map -->
+                <div class="mini-map-container">
+                    <span class="map-label">🗺️ Nearby Reports</span>
+                    <div id="homeMiniMap"></div>
+                </div>
+
+                <!-- Community Feed -->
+                <div class="section-title"><span class="dot"></span> Community Reports</div>
+                <div id="communityFeed">
+                    <!-- Dynamically filled -->
+                </div>
+
+                <!-- News -->
+                <div class="section-title"><span class="dot"></span> 📰 Local News & Alerts</div>
+                <div class="news-card">
+                    <span class="news-tag">🚨 Alert</span>
+                    <div class="news-title">Scheduled Water Outage — Chalala Area</div>
+                    <div class="news-excerpt">Lusaka Water & Sewerage Company announces maintenance works this Saturday, 08:00–14:00. Residents advised to store water.</div>
+                </div>
+                <div class="news-card">
+                    <span class="news-tag">📢 Announcement</span>
+                    <div class="news-title">CDF Public Forum — Kabwata Constituency</div>
+                    <div class="news-excerpt">Join the community meeting on June 20th at Chalala Community Hall to discuss CDF allocations for Q3 2026.</div>
+                </div>
+
+                <!-- CDF Budget Overview -->
+                <div class="cdf-card">
+                    <h4>💰 CDF Budget — Kabwata Constituency</h4>
+                    <p style="font-size:12px;color:#777;">Total Allocated: <strong>K 25,800,000</strong> (2026)</p>
+                    <div class="cdf-bar"><div class="cdf-bar-fill" style="width:68%;"></div></div>
+                    <div class="cdf-stats">
+                        <span>Spent: <strong>K 17,544,000</strong></span>
+                        <span>Remaining: <strong>K 8,256,000</strong></span>
+                    </div>
+                    <p style="font-size:10px;color:#999;margin-top:4px;">📊 68% disbursed • Last updated: May 2026</p>
+                </div>
+
+                <!-- Directory Quick Access -->
+                <div class="section-title"><span class="dot"></span> 📞 Quick Directory</div>
+                <div class="dir-card">
+                    <div class="dir-icon clinic">🏥</div>
+                    <div class="dir-info">
+                        <div class="dir-name">Chalala Clinic</div>
+                        <div class="dir-contact">📞 +260 211 123 456</div>
+                    </div>
+                </div>
+                <div class="dir-card">
+                    <div class="dir-icon police">🚔</div>
+                    <div class="dir-info">
+                        <div class="dir-name">Kabwata Police Station</div>
+                        <div class="dir-contact">📞 +260 211 987 654</div>
+                    </div>
+                </div>
+                <div class="dir-card">
+                    <div class="dir-icon rep">🏛️</div>
+                    <div class="dir-info">
+                        <div class="dir-name">Area Councillor — Chalala Ward</div>
+                        <div class="dir-contact">📞 +260 977 000 111</div>
+                    </div>
+                </div>
+                <div style="height:20px;"></div>
+            </div>
+
+            <!-- SCREEN 4: REPORT FORM -->
+            <div class="screen" id="screenReport">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+                    <button class="icon-btn" id="btnBackFromReport">←</button>
+                    <h3 style="font-weight:700;color:var(--text);">📝 Report an Issue</h3>
+                </div>
+                <p style="font-size:11px;color:#888;margin-bottom:12px;">Reporting as: 👤 <strong>User</strong> (Anonymous) • 📍 Chalala Ward</p>
+                <div class="form-group">
+                    <label>Issue Type</label>
+                    <select id="issueType">
+                        <option value="">Select issue type...</option>
+                        <option value="pothole">🕳️ Pothole / Road Damage</option>
+                        <option value="streetlight">💡 Broken Streetlight</option>
+                        <option value="waste">🗑️ Waste / Garbage</option>
+                        <option value="water">💧 Water Supply Issue</option>
+                        <option value="noise">🔊 Noise Complaint</option>
+                        <option value="other">📋 Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="issueDesc" rows="3" placeholder="Describe the issue clearly..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>📸 Attach Photo / Video</label>
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <div class="upload-icon">📎</div>
+                        <p>Tap to attach photo or video</p>
+                        <input type="file" id="fileInput" accept="image/*,video/*" style="display:none;" multiple>
+                        <div id="previewContainer" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>📍 Pin Location on Map</label>
+                    <div style="height:180px;border-radius:10px;overflow:hidden;border:2px solid #e0e0e0;" id="reportMapContainer"></div>
+                    <p style="font-size:10px;color:#888;margin-top:4px;">Tap the map to drop a pin at the issue location</p>
+                </div>
+                <button class="btn btn-primary" id="btnSubmitReport">🚀 Submit Report</button>
+                <p style="text-align:center;font-size:10px;color:#aaa;margin-top:6px;">Your report will be anonymous</p>
+                <div style="height:20px;"></div>
+            </div>
+
+            <!-- SCREEN 5: FULL DIRECTORY -->
+            <div class="screen" id="screenDirectory">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+                    <button class="icon-btn" id="btnBackFromDirectory">←</button>
+                    <h3 style="font-weight:700;color:var(--text);">📞 Constituency Directory</h3>
+                </div>
+                <div class="dir-card">
+                    <div class="dir-icon clinic">🏥</div>
+                    <div class="dir-info"><div class="dir-name">Chalala Clinic</div><div class="dir-contact">📞 +260 211 123 456</div></div>
+                </div>
+                <div class="dir-card">
+                    <div class="dir-icon school">🏫</div>
+                    <div class="dir-info"><div class="dir-name">Chalala Primary School</div><div class="dir-contact">📞 +260 211 234 567</div></div>
+                </div>
+                <div class="dir-card">
+                    <div class="dir-icon police">🚔</div>
+                    <div class="dir-info"><div class="dir-name">Kabwata Police Station</div><div class="dir-contact">📞 +260 211 987 654</div></div>
+                </div>
+                <div class="dir-card">
+                    <div class="dir-icon rep">🏛️</div>
+                    <div class="dir-info"><div class="dir-name">MP — Kabwata Constituency</div><div class="dir-contact">📞 +260 977 111 222</div></div>
+                </div>
+                <div class="dir-card">
+                    <div class="dir-icon rep">🏛️</div>
+                    <div class="dir-info"><div class="dir-name">Councillor — Chalala Ward</div><div class="dir-contact">📞 +260 977 000 111</div></div>
+                </div>
+                <div class="dir-card">
+                    <div class="dir-icon clinic">🏥</div>
+                    <div class="dir-info"><div class="dir-name">Lusaka General Hospital</div><div class="dir-contact">📞 +260 211 555 000</div></div>
+                </div>
+            </div>
         </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav" id="bottomNav">
+            <button class="nav-item active" data-screen="home">
+                <span class="nav-icon">🏠</span> Home
+            </button>
+            <button class="nav-item" data-screen="report">
+                <span class="nav-icon">📝</span> Report
+            </button>
+            <button class="nav-item" data-screen="feed">
+                <span class="nav-icon">📰</span> Feed
+            </button>
+            <button class="nav-item" data-screen="directory">
+                <span class="nav-icon">📞</span> Directory
+            </button>
+            <button class="nav-item" data-screen="more">
+                <span class="nav-icon">⚙️</span> More
+            </button>
+        </nav>
+
+        <!-- FAB -->
+        <button class="fab" id="fabReport" title="Quick Report">＋</button>
+
+        <!-- Confirmation Modal -->
+        <div class="modal-overlay" id="confirmModal">
+            <div class="modal-dialog">
+                <div class="modal-icon">🤔</div>
+                <h4>Confirm Your Location</h4>
+                <p>Are you sure you want to be part of <strong>Lusaka Province</strong> and <strong>Kabwata Constituency</strong> (Chalala Ward)?</p>
+                <div class="modal-btns">
+                    <button class="btn btn-outline" id="btnModalNo">No, Change</button>
+                    <button class="btn btn-primary" id="btnModalYes" style="margin-top:0;">✅ Yes, Join!</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast -->
+        <div class="toast" id="toast"></div>
     </div>
 
-    <!-- PROFILE MODAL -->
-    <div id="profileModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: flex-end;">
-        <div style="background-color: white; border-radius: 24px 24px 0 0; width: 100%; max-height: 90vh; overflow-y: auto; padding: 24px 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                <h2 style="margin: 0; font-size: 20px; font-weight: 700; color: #1e293b;">My Profile</h2>
-                <button onclick="closeProfileModal()" style="background: none; border: none; font-size: 24px; color: #64748b; cursor: pointer;">×</button>
-            </div>
-            
-            <div id="profileContent">
-                <!-- Profile loaded via JS -->
-            </div>
-        </div>
-    </div>
-
-    <!-- JavaScript - Local DB, no Supabase -->
     <script>
-        // ==================== LOCAL DATABASE ====================
-        const DB = {
-            profiles: [
-                { id: 'user_demo', phone: '+260970000000', full_name: 'Demo User', trust_score: 150, reports_submitted: 5, reports_verified: 12, last_report_at: null },
-                { id: 'user_admin', phone: '+260971111111', full_name: 'Community Admin', trust_score: 500, reports_submitted: 20, reports_verified: 45, last_report_at: null }
-            ],
-            reports: [
-                { id: 'rep1', user_id: 'user_demo', category: 'security', title: 'Suspicious person near market', description: 'Loitering for hours', latitude: -15.425, longitude: 28.325, is_anonymous: false, status: 'pending', confirmations: 2, flags: 0, is_verified: false, created_at: new Date(Date.now() - 2*24*60*60*1000).toISOString() },
-                { id: 'rep2', user_id: 'user_admin', category: 'water', title: 'Broken pipe on Main Street', description: 'Water gushing out', latitude: -15.430, longitude: 28.330, is_anonymous: true, status: 'in_progress', confirmations: 5, flags: 0, is_verified: true, created_at: new Date(Date.now() - 5*24*60*60*1000).toISOString() },
-                { id: 'rep3', user_id: 'user_demo', category: 'roads', title: 'Large pothole near school', description: 'Dangerous for kids', latitude: -15.420, longitude: 28.320, is_anonymous: false, status: 'resolved', confirmations: 8, flags: 0, is_verified: true, created_at: new Date(Date.now() - 10*24*60*60*1000).toISOString() },
-                { id: 'rep4', user_id: 'user_demo', category: 'general', title: 'Suggest new speed bump', description: 'Cars speed too fast on this road', latitude: -15.422, longitude: 28.322, is_anonymous: true, status: 'pending', confirmations: 1, flags: 0, is_verified: false, created_at: new Date(Date.now() - 1*24*60*60*1000).toISOString() }
-            ],
-            verifications: [],
-            admin_questions: [
-                { id: 'q1', question: 'How do you feel about the new market construction?', active: true, created_at: new Date(Date.now() - 1*24*60*60*1000).toISOString() }
-            ],
-            question_responses: [
-                { question_id: 'q1', user_id: 'user_demo', reaction: 'good', comment: '' },
-                { question_id: 'q1', user_id: 'user_admin', reaction: 'okay', comment: 'Needs more lighting' }
-            ],
-            cdf_projects: [
-                { id: 'cdf1', title: 'Market Rehabilitation', description: 'Upgrading Chalala market', budget: 2000000, spent: 850000, progress: 42, start_date: '2025-01-01', end_date: '2025-12-31', created_at: new Date().toISOString() },
-                { id: 'cdf2', title: 'Road Patching', description: 'Fixing potholes in Zone 3', budget: 800000, spent: 300000, progress: 37, start_date: '2025-02-15', end_date: '2025-06-30', created_at: new Date().toISOString() }
-            ]
-        };
+        (function() {
+            // ============ DOM ELEMENTS ============
+            const appContainer = document.getElementById('appContainer');
+            const screensWrapper = document.getElementById('screensWrapper');
+            const screenLogin = document.getElementById('screenLogin');
+            const screenOTP = document.getElementById('screenOTP');
+            const screenIntro = document.getElementById('screenIntro');
+            const screenHome = document.getElementById('screenHome');
+            const screenReport = document.getElementById('screenReport');
+            const screenDirectory = document.getElementById('screenDirectory');
+            const bottomNav = document.getElementById('bottomNav');
+            const fabReport = document.getElementById('fabReport');
+            const confirmModal = document.getElementById('confirmModal');
+            const toast = document.getElementById('toast');
+            const offlineBanner = document.getElementById('offlineBanner');
+            const onlineDot = document.getElementById('onlineDot');
+            const statusTime = document.getElementById('statusTime');
 
-        // Load from localStorage if available
-        function loadDB() {
-            try {
-                const saved = localStorage.getItem('chalala_db');
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    Object.assign(DB, parsed);
+            const phoneInput = document.getElementById('phoneInput');
+            const btnSendOTP = document.getElementById('btnSendOTP');
+            const otpPhoneDisplay = document.getElementById('otpPhoneDisplay');
+            const otpBoxes = document.getElementById('otpBoxes');
+            const btnVerifyOTP = document.getElementById('btnVerifyOTP');
+            const resendLink = document.getElementById('resendLink');
+            const otpTimerEl = document.getElementById('otpTimer');
+            const btnConfirmLocation = document.getElementById('btnConfirmLocation');
+            const btnModalYes = document.getElementById('btnModalYes');
+            const btnModalNo = document.getElementById('btnModalNo');
+            const communityFeed = document.getElementById('communityFeed');
+            const statReceived = document.getElementById('statReceived');
+            const statInProgress = document.getElementById('statInProgress');
+            const statResolved = document.getElementById('statResolved');
+            const fileUploadArea = document.getElementById('fileUploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const previewContainer = document.getElementById('previewContainer');
+            const btnSubmitReport = document.getElementById('btnSubmitReport');
+            const issueType = document.getElementById('issueType');
+            const issueDesc = document.getElementById('issueDesc');
+
+            // ============ STATE ============
+            let currentScreen = 'login';
+            let userPhone = '';
+            let otpValue = '';
+            let otpTimer = 30;
+            let otpInterval = null;
+            let reports = [];
+            let homeMap = null;
+            let reportMap = null;
+            let reportPin = null;
+            let selectedLat = -15.425;
+            let selectedLng = 28.315;
+
+            // Load persisted data
+            function loadData() {
+                try {
+                    const saved = localStorage.getItem('appyatu_reports');
+                    if (saved) reports = JSON.parse(saved);
+                } catch (e) {
+                    reports = [];
                 }
-            } catch (e) {}
-        }
-        function saveDB() {
-            localStorage.setItem('chalala_db', JSON.stringify(DB));
-        }
-        loadDB();
+                if (reports.length === 0) {
+                    // Seed sample reports
+                    reports = [
+                        { id: 'RPT-001', title: 'Large pothole on Chalala Road', type: 'pothole', status: 'in-progress',
+                            votes: 24, lat: -15.423, lng: 28.313, date: '2026-05-10', userVoted: false },
+                        { id: 'RPT-002', title: 'Broken streetlight near market', type: 'streetlight',
+                            status: 'received', votes: 18, lat: -15.427, lng: 28.317, date: '2026-05-12',
+                            userVoted: false },
+                        { id: 'RPT-003', title: 'Uncollected waste bins — 3 days', type: 'waste', status: 'resolved',
+                            votes: 31, lat: -15.421, lng: 28.319, date: '2026-05-08', userVoted: false },
+                        { id: 'RPT-004', title: 'Water pipe leakage near school', type: 'water', status: 'in-progress',
+                            votes: 15, lat: -15.428, lng: 28.311, date: '2026-05-14', userVoted: false },
+                    ];
+                    saveData();
+                }
+            }
 
-        // ==================== App State ====================
-        let currentUser = null;
-        let userProfile = null;
-        let userLocation = null;
-        let map = null;
-        let markers = [];
-        let lastReportTime = null;
-        let currentQuestion = null;
+            function saveData() {
+                try {
+                    localStorage.setItem('appyatu_reports', JSON.stringify(reports));
+                } catch (e) { /* quota exceeded, ignore */ }
+            }
 
-        const CHALALA_BOUNDARY = {
-            type: "Polygon",
-            coordinates: [[
-                [28.300, -15.450],
-                [28.350, -15.450],
-                [28.350, -15.400],
-                [28.300, -15.400],
-                [28.300, -15.450]
-            ]]
-        };
+            loadData();
 
-        // ==================== Auth Functions ====================
-        function showAuthModal() {
-            document.getElementById('authModal').style.display = 'flex';
-            document.getElementById('appContent').style.display = 'none';
-        }
-        function closeAuthModal() {
-            document.getElementById('authModal').style.display = 'none';
-        }
+            // ============ HELPER FUNCTIONS ============
+            function showScreen(screenId) {
+                const allScreens = [screenLogin, screenOTP, screenIntro, screenHome, screenReport, screenDirectory];
+                const targetScreen = document.getElementById('screen' + screenId.charAt(0).toUpperCase() + screenId
+                    .slice(1));
+                // Handle special mappings
+                let target = null;
+                switch (screenId) {
+                    case 'login':
+                        target = screenLogin;
+                        break;
+                    case 'otp':
+                        target = screenOTP;
+                        break;
+                    case 'intro':
+                        target = screenIntro;
+                        break;
+                    case 'home':
+                        target = screenHome;
+                        break;
+                    case 'report':
+                        target = screenReport;
+                        break;
+                    case 'directory':
+                        target = screenDirectory;
+                        break;
+                    default:
+                        target = screenHome;
+                }
 
-        function setupOTPInputs() {
-            const inputs = document.querySelectorAll('#authStep2 input[type="text"]');
-            inputs.forEach((input, index) => {
-                input.addEventListener('input', (e) => {
-                    if (e.target.value.length === 1 && index < inputs.length - 1) {
-                        inputs[index + 1].focus();
+                allScreens.forEach(s => {
+                    if (s === target) {
+                        s.classList.add('active');
+                        s.classList.remove('slide-left');
+                        s.scrollTop = 0;
+                    } else {
+                        s.classList.remove('active');
+                        if (s.classList.contains('active') === false) s.classList.add('slide-left');
                     }
                 });
-                input.addEventListener('keydown', (e) => {
-                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                        inputs[index - 1].focus();
-                    }
+                currentScreen = screenId;
+                updateBottomNav(screenId);
+                updateFab(screenId);
+
+                // Initialize maps when needed
+                if (screenId === 'home' && !homeMap) initHomeMap();
+                if (screenId === 'report' && !reportMap) initReportMap();
+                if (screenId === 'home') refreshHomeData();
+            }
+
+            function updateBottomNav(screenId) {
+                const navItems = bottomNav.querySelectorAll('.nav-item');
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.dataset.screen === screenId) item.classList.add('active');
                 });
+                // Map some screens to nav items
+                const navMap = { 'home': 'home', 'report': 'report', 'intro': 'home', 'otp': 'home', 'login': 'home',
+                    'directory': 'directory' };
+                const mapped = navMap[screenId] || screenId;
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.dataset.screen === mapped) item.classList.add('active');
+                });
+            }
+
+            function updateFab(screenId) {
+                if (screenId === 'home' || screenId === 'feed') {
+                    fabReport.style.display = 'flex';
+                } else if (screenId === 'report') {
+                    fabReport.style.display = 'none';
+                } else {
+                    fabReport.style.display = 'none';
+                }
+            }
+
+            function showToast(message, type = '') {
+                toast.textContent = message;
+                toast.className = 'toast ' + type + ' show';
+                clearTimeout(toast._timeout);
+                toast._timeout = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2500);
+            }
+
+            function updateOnlineStatus() {
+                const online = navigator.onLine;
+                if (online) {
+                    offlineBanner.classList.remove('show');
+                    onlineDot.classList.remove('offline');
+                    onlineDot.style.background = '#4CAF50';
+                } else {
+                    offlineBanner.classList.add('show');
+                    onlineDot.classList.add('offline');
+                    onlineDot.style.background = '#f44336';
+                }
+            }
+
+            function updateTime() {
+                const now = new Date();
+                statusTime.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit',
+                    hour12: false });
+            }
+
+            // ============ PHONE INPUT ============
+            phoneInput.addEventListener('input', function() {
+                // Remove non-digits
+                this.value = this.value.replace(/\D/g, '');
+                if (this.value.length > 9) this.value = this.value.slice(0, 9);
+                btnSendOTP.disabled = this.value.length < 9;
+                if (this.value.length === 9) {
+                    btnSendOTP.style.background = '';
+                }
             });
-        }
 
-        function sendOTP() {
-            const phone = document.getElementById('phoneInput').value.trim();
-            if (!phone || !phone.startsWith('+260')) {
-                alert('Please enter a valid Zambian phone number starting with +260');
-                return;
-            }
-            const otp = Math.floor(100000 + Math.random() * 900000).toString();
-            localStorage.setItem('temp_otp', otp);
-            localStorage.setItem('temp_phone', phone);
+            phoneInput.addEventListener('keydown', function(e) {
+                // Allow backspace, arrows, etc.
+                const allowed = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'];
+                if (allowed.includes(e.key)) return;
+                if (!/^\d$/.test(e.key)) e.preventDefault();
+            });
 
-            document.getElementById('phoneNumberDisplay').textContent = phone;
-            document.getElementById('authStep1').style.display = 'none';
-            document.getElementById('authStep2').style.display = 'block';
-
-            setTimeout(() => {
-                alert(`[DEMO] Your OTP is: ${otp}`);
-            }, 500);
-        }
-
-        function verifyOTP() {
-            const otpInputs = document.querySelectorAll('#authStep2 input[type="text"]');
-            const enteredOTP = Array.from(otpInputs).map(input => input.value).join('');
-            const savedOTP = localStorage.getItem('temp_otp');
-            const phone = localStorage.getItem('temp_phone');
-
-            if (enteredOTP === savedOTP) {
-                const userId = createOrGetUser(phone);
-                localStorage.setItem('chalala_session', JSON.stringify({
-                    userId, phone, timestamp: Date.now()
-                }));
-                loginUser(userId, phone);
-                closeAuthModal();
-                document.getElementById('appContent').style.display = 'block';
-                localStorage.removeItem('temp_otp');
-                localStorage.removeItem('temp_phone');
-            } else {
-                alert('Invalid OTP. Try again.');
-            }
-        }
-
-        function createOrGetUser(phone) {
-            let profile = DB.profiles.find(p => p.phone === phone);
-            if (!profile) {
-                profile = {
-                    id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                    phone: phone,
-                    full_name: 'Community Member',
-                    trust_score: 100,
-                    reports_submitted: 0,
-                    reports_verified: 0,
-                    last_report_at: null
-                };
-                DB.profiles.push(profile);
-                saveDB();
-            }
-            return profile.id;
-        }
-
-        function loginUser(userId, phone) {
-            currentUser = { id: userId, phone };
-            userProfile = DB.profiles.find(p => p.id === userId);
-            if (!userProfile) return;
-
-            document.getElementById('trustScoreBadge').textContent = `Score: ${userProfile.trust_score}`;
-            loadCommunityPulse();
-            initializeMap();
-            loadReports();
-            loadCDFProjects();
-            loadUserStats();
-            getCurrentLocation(); // ask for location
-        }
-
-        function logout() {
-            localStorage.removeItem('chalala_session');
-            currentUser = null;
-            userProfile = null;
-            showAuthModal();
-            document.getElementById('appContent').style.display = 'none';
-        }
-
-        // ==================== Map Functions ====================
-        function initializeMap() {
-            if (map) map.remove();
-            const defaultCenter = [-15.425, 28.325];
-            map = L.map('map').setView(defaultCenter, 14);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
-            L.geoJSON(CHALALA_BOUNDARY, {
-                style: { color: '#2563eb', weight: 2, fillOpacity: 0.1 }
-            }).addTo(map);
-            if (userLocation) {
-                L.marker([userLocation.lat, userLocation.lng]).addTo(map).bindPopup('Your Location').openPopup();
-            }
-        }
-
-        function filterMap(category) {
-            // Clear existing markers
-            markers.forEach(m => map.removeLayer(m));
-            markers = [];
-            // Reload reports with that category filter (or all)
-            loadReports(category);
-        }
-
-        // ==================== Reports ====================
-        function openReportModal() {
-            if (lastReportTime) {
-                const timeSince = Date.now() - lastReportTime;
-                if (timeSince < 15 * 60 * 1000) {
-                    const mins = Math.ceil((15*60*1000 - timeSince) / 60000);
-                    document.getElementById('rateLimitWarning').style.display = 'block';
-                    document.getElementById('rateLimitWarning').innerHTML = `
-                        <p style="margin:0;font-size:14px;color:#92400e;">
-                            <i class="fas fa-clock" style="margin-right:8px;"></i>
-                            Rate limit: One report every 15 minutes. Please wait ${mins} more minutes.
-                        </p>`;
+            // ============ SEND OTP ============
+            btnSendOTP.addEventListener('click', function() {
+                const number = phoneInput.value.trim();
+                if (number.length < 9) {
+                    showToast('Please enter a valid 9-digit number', 'error');
                     return;
                 }
-            }
-            document.getElementById('reportModal').style.display = 'flex';
-            document.getElementById('rateLimitWarning').style.display = 'none';
-        }
-        function closeReportModal() {
-            document.getElementById('reportModal').style.display = 'none';
-        }
-        function quickReport(category) {
-            openReportModal();
-            document.getElementById('reportCategory').value = category;
-            getCurrentLocation();
-        }
-
-        function getCurrentLocation() {
-            if (!navigator.geolocation) {
-                alert('Geolocation not supported');
-                return;
-            }
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    const lat = pos.coords.latitude;
-                    const lng = pos.coords.longitude;
-                    userLocation = { lat, lng };
-                    const inside = isWithinBoundary(lat, lng);
-                    document.getElementById('locationStatus').innerHTML = inside
-                        ? '<span style="color:#10b981;"><i class="fas fa-check-circle"></i> Within Chalala</span>'
-                        : '<span style="color:#ef4444;"><i class="fas fa-exclamation-triangle"></i> Outside Chalala</span>';
-                    document.getElementById('reportLatitude').value = lat;
-                    document.getElementById('reportLongitude').value = lng;
-                    if (map) {
-                        map.setView([lat, lng], 16);
-                        L.marker([lat, lng]).addTo(map).bindPopup('Your Location').openPopup();
-                    }
-                },
-                () => {
-                    document.getElementById('locationStatus').textContent = 'Unable to get location.';
-                }
-            );
-        }
-
-        function isWithinBoundary(lat, lng) {
-            return lat >= -15.450 && lat <= -15.400 && lng >= 28.300 && lng <= 28.350;
-        }
-
-        function submitReport() {
-            if (!currentUser) { alert('Please login'); return; }
-            const category = document.getElementById('reportCategory').value;
-            const title = document.getElementById('reportTitle').value.trim();
-            const desc = document.getElementById('reportDescription').value.trim();
-            const lat = parseFloat(document.getElementById('reportLatitude').value);
-            const lng = parseFloat(document.getElementById('reportLongitude').value);
-            const anonymous = document.getElementById('anonymousToggle').checked;
-
-            if (!title) { alert('Enter a title'); return; }
-            if (!lat || !lng) { alert('Select a location'); return; }
-            if (!isWithinBoundary(lat, lng)) { alert('Must be within Chalala'); return; }
-            if (lastReportTime && (Date.now() - lastReportTime < 15*60*1000)) {
-                alert('Rate limit: one report per 15 minutes');
-                return;
-            }
-
-            const newReport = {
-                id: 'rep_' + Date.now() + '_' + Math.random().toString(36).substr(2,5),
-                user_id: currentUser.id,
-                category, title, description: desc,
-                latitude: lat, longitude: lng,
-                is_anonymous: anonymous,
-                status: 'pending',
-                confirmations: 0, flags: 0, is_verified: false,
-                created_at: new Date().toISOString()
-            };
-            DB.reports.unshift(newReport);
-
-            userProfile.reports_submitted += 1;
-            userProfile.last_report_at = new Date().toISOString();
-            saveDB();
-
-            lastReportTime = Date.now();
-            alert('Report submitted!');
-            closeReportModal();
-            document.getElementById('reportTitle').value = '';
-            document.getElementById('reportDescription').value = '';
-            loadReports();
-        }
-
-        // ==================== Community Pulse ====================
-        function loadCommunityPulse() {
-            const question = DB.admin_questions.find(q => q.active === true);
-            if (!question) return;
-            currentQuestion = question;
-            document.getElementById('currentQuestion').innerHTML = `
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-                    <div style="width:32px;height:32px;background:#2563eb;border-radius:50%;display:flex;align-items:center;justify-content:center;">
-                        <i class="fas fa-user-shield" style="color:white;font-size:16px;"></i>
-                    </div>
-                    <div>
-                        <div style="font-weight:600;color:#1e293b;">Community Admin</div>
-                        <div style="font-size:11px;color:#64748b;">Posted: ${new Date(question.created_at).toLocaleDateString()}</div>
-                    </div>
-                </div>
-                <p style="margin:0;font-size:15px;color:#334155;font-weight:500;">"${question.question}"</p>
-            `;
-            loadQuestionReactions(question.id);
-        }
-
-        function loadQuestionReactions(qid) {
-            const responses = DB.question_responses.filter(r => r.question_id === qid);
-            let bad=0, okay=0, good=0;
-            responses.forEach(r => {
-                if (r.reaction === 'bad') bad++;
-                else if (r.reaction === 'okay') okay++;
-                else if (r.reaction === 'good') good++;
+                userPhone = '+260 ' + number.replace(/(\d{2})(\d{3})(\d{4})/, '$1 $2 $3');
+                otpPhoneDisplay.textContent = userPhone;
+                otpValue = '123456'; // Demo OTP
+                showToast('Demo OTP: 123456', 'success');
+                showScreen('otp');
+                startOTPTimer();
+                // Focus first OTP box
+                setTimeout(() => {
+                    const firstBox = otpBoxes.querySelector('.otp-box');
+                    if (firstBox) firstBox.focus();
+                }, 400);
             });
-            const total = bad+okay+good || 1;
-            const badP = Math.round(bad/total*100);
-            const okayP = Math.round(okay/total*100);
-            const goodP = Math.round(good/total*100);
-            document.getElementById('sentimentChart').innerHTML = `
-                <div style="display:flex;align-items:center;margin-bottom:8px;">
-                    <button onclick="submitReaction('bad')" style="width:50px;font-size:13px;background:none;border:none;cursor:pointer;text-align:left;">😠 Bad</button>
-                    <div style="flex:1;height:16px;background:#e2e8f0;border-radius:8px;overflow:hidden;">
-                        <div style="width:${badP}%;height:100%;background:#ef4444;"></div>
-                    </div>
-                    <span style="width:40px;text-align:right;font-weight:600;font-size:13px;">${badP}%</span>
-                </div>
-                <div style="display:flex;align-items:center;margin-bottom:8px;">
-                    <button onclick="submitReaction('okay')" style="width:50px;font-size:13px;background:none;border:none;cursor:pointer;text-align:left;">😐 Okay</button>
-                    <div style="flex:1;height:16px;background:#e2e8f0;border-radius:8px;overflow:hidden;">
-                        <div style="width:${okayP}%;height:100%;background:#f59e0b;"></div>
-                    </div>
-                    <span style="width:40px;text-align:right;font-weight:600;font-size:13px;">${okayP}%</span>
-                </div>
-                <div style="display:flex;align-items:center;">
-                    <button onclick="submitReaction('good')" style="width:50px;font-size:13px;background:none;border:none;cursor:pointer;text-align:left;">😊 Good</button>
-                    <div style="flex:1;height:16px;background:#e2e8f0;border-radius:8px;overflow:hidden;">
-                        <div style="width:${goodP}%;height:100%;background:#10b981;"></div>
-                    </div>
-                    <span style="width:40px;text-align:right;font-weight:600;font-size:13px;">${goodP}%</span>
-                </div>
-            `;
-        }
 
-        function submitReaction(reaction) {
-            if (!currentUser || !currentQuestion) return;
-            const existing = DB.question_responses.find(r => r.question_id === currentQuestion.id && r.user_id === currentUser.id);
-            if (existing) {
-                existing.reaction = reaction;
-            } else {
-                DB.question_responses.push({
-                    question_id: currentQuestion.id,
-                    user_id: currentUser.id,
-                    reaction: reaction,
-                    comment: ''
-                });
-            }
-            saveDB();
-            loadQuestionReactions(currentQuestion.id);
-        }
-
-        function addComment() {
-            if (!currentUser || !currentQuestion) { alert('Login first'); return; }
-            const comment = document.getElementById('commentInput').value.trim();
-            if (!comment) { alert('Enter comment'); return; }
-            const existing = DB.question_responses.find(r => r.question_id === currentQuestion.id && r.user_id === currentUser.id);
-            if (existing) {
-                existing.comment = comment;
-            } else {
-                DB.question_responses.push({
-                    question_id: currentQuestion.id,
-                    user_id: currentUser.id,
-                    reaction: 'okay',
-                    comment: comment
-                });
-            }
-            saveDB();
-            document.getElementById('commentInput').value = '';
-            alert('Comment added');
-            loadQuestionReactions(currentQuestion.id);
-        }
-
-        // ==================== Load Reports with Filter and Map Markers ====================
-        function loadReports(filter = 'all') {
-            let reports = [...DB.reports];
-            // Apply filter
-            if (filter === 'verified') {
-                reports = reports.filter(r => r.is_verified);
-            } else if (filter === '7days') {
-                const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
-                reports = reports.filter(r => new Date(r.created_at) >= weekAgo);
-            } else if (filter === 'security' || filter === 'water' || filter === 'roads' || filter === 'waste' || filter === 'general') {
-                reports = reports.filter(r => r.category === filter);
-            } else if (filter === 'nearby' && userLocation) {
-                reports = reports.filter(r => {
-                    if (!r.latitude) return false;
-                    const d = Math.hypot(r.latitude - userLocation.lat, r.longitude - userLocation.lng);
-                    return d < 0.01; // ~1km
-                });
-            }
-
-            // Update stats
-            const active = reports.filter(r => r.status === 'pending').length;
-            const resolved = reports.filter(r => r.status === 'resolved').length;
-            document.getElementById('activeReports').textContent = active;
-            document.getElementById('resolvedReports').textContent = resolved;
-            document.getElementById('totalReports').textContent = reports.length;
-
-            // Clear and rebuild reports list
-            const container = document.getElementById('reportsList');
-            container.innerHTML = '';
-            if (reports.length === 0) {
-                container.innerHTML = '<div style="padding:20px;text-align:center;color:#64748b;">No reports found</div>';
-                return;
-            }
-
-            // Clear existing map markers
-            markers.forEach(m => map.removeLayer(m));
-            markers = [];
-
-            reports.slice(0, 20).forEach(report => {
-                const categoryIcon = {
-                    security: { icon: 'fa-shield-alt', color: '#ef4444', bg: '#fee2e2' },
-                    water: { icon: 'fa-tint', color: '#0ea5e9', bg: '#e0f2fe' },
-                    roads: { icon: 'fa-road', color: '#f59e0b', bg: '#fef3c7' },
-                    waste: { icon: 'fa-trash', color: '#10b981', bg: '#d1fae5' },
-                    general: { icon: 'fa-comment', color: '#8b5cf6', bg: '#ede9fe' }
-                }[report.category] || { icon: 'fa-flag', color: '#64748b', bg: '#f1f5f9' };
-
-                const el = document.createElement('div');
-                el.style.cssText = "padding:16px;border-bottom:1px solid #f1f5f9;display:flex;align-items:flex-start;gap:12px;cursor:pointer;";
-                // Click on the whole card centers map on this report
-                el.onclick = (e) => {
-                    // Prevent click when interacting with buttons inside
-                    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
-                    if (map && report.latitude && report.longitude) {
-                        map.setView([report.latitude, report.longitude], 16);
-                        // Find the marker for this report and open its popup
-                        const marker = markers.find(m => m.reportId === report.id);
-                        if (marker) marker.openPopup();
+            // ============ OTP BOXES ============
+            const otpInputs = otpBoxes.querySelectorAll('.otp-box');
+            otpInputs.forEach((input, index) => {
+                input.addEventListener('input', function() {
+                    this.value = this.value.replace(/\D/g, '');
+                    if (this.value.length === 1) {
+                        this.classList.add('filled');
+                        if (index < 5) {
+                            otpInputs[index + 1].focus();
+                        }
+                    } else {
+                        this.classList.remove('filled');
                     }
-                };
-                el.innerHTML = `
-                    <div style="width:40px;height:40px;background:${categoryIcon.bg};border-radius:10px;display:flex;align-items:center;justify-content:center;">
-                        <i class="fas ${categoryIcon.icon}" style="color:${categoryIcon.color};"></i>
-                    </div>
-                    <div style="flex:1;">
-                        <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
-                            <h3 style="margin:0;font-size:15px;font-weight:600;color:#1e293b;">${report.title}</h3>
-                            <span style="font-size:11px;color:#64748b;">${timeAgo(new Date(report.created_at))}</span>
+                    checkOTPComplete();
+                });
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                        otpInputs[index - 1].focus();
+                        otpInputs[index - 1].value = '';
+                        otpInputs[index - 1].classList.remove('filled');
+                    }
+                    if (e.key === 'ArrowLeft' && index > 0) {
+                        otpInputs[index - 1].focus();
+                    }
+                    if (e.key === 'ArrowRight' && index < 5) {
+                        otpInputs[index + 1].focus();
+                    }
+                });
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pasteData = (e.clipboardData || window.clipboardData).getData('text');
+                    const digits = pasteData.replace(/\D/g, '').slice(0, 6);
+                    digits.split('').forEach((d, i) => {
+                        if (otpInputs[i]) {
+                            otpInputs[i].value = d;
+                            otpInputs[i].classList.add('filled');
+                        }
+                    });
+                    checkOTPComplete();
+                    if (digits.length < 6 && digits.length > 0 && otpInputs[digits.length]) {
+                        otpInputs[digits.length].focus();
+                    }
+                });
+            });
+
+            function checkOTPComplete() {
+                const allFilled = Array.from(otpInputs).every(inp => inp.value.length === 1);
+                btnVerifyOTP.disabled = !allFilled;
+                if (allFilled) {
+                    btnVerifyOTP.style.background = '';
+                }
+            }
+
+            function startOTPTimer() {
+                otpTimer = 30;
+                otpTimerEl.textContent = otpTimer + 's';
+                clearInterval(otpInterval);
+                otpInterval = setInterval(() => {
+                    otpTimer--;
+                    otpTimerEl.textContent = otpTimer + 's';
+                    if (otpTimer <= 0) {
+                        clearInterval(otpInterval);
+                        otpTimerEl.textContent = 'Expired';
+                        otpTimerEl.style.color = '#d32f2f';
+                    }
+                }, 1000);
+            }
+
+            resendLink.addEventListener('click', function() {
+                otpValue = '123456';
+                showToast('New OTP: 123456', 'success');
+                startOTPTimer();
+                otpTimerEl.style.color = '#555';
+                otpInputs.forEach(inp => { inp.value = '';
+                    inp.classList.remove('filled'); });
+                otpInputs[0].focus();
+                btnVerifyOTP.disabled = true;
+            });
+
+            // ============ VERIFY OTP ============
+            btnVerifyOTP.addEventListener('click', function() {
+                const entered = Array.from(otpInputs).map(inp => inp.value).join('');
+                if (entered.length < 6) {
+                    showToast('Please enter all 6 digits', 'error');
+                    return;
+                }
+                // Demo: any 6 digits accepted
+                if (entered.length === 6) {
+                    clearInterval(otpInterval);
+                    showToast('✅ Verified! Welcome!', 'success');
+                    setTimeout(() => showScreen('intro'), 500);
+                }
+            });
+
+            document.getElementById('btnBackOTP').addEventListener('click', function() {
+                clearInterval(otpInterval);
+                showScreen('login');
+            });
+
+            // ============ INTRO / CONFIRMATION ============
+            btnConfirmLocation.addEventListener('click', function() {
+                confirmModal.classList.add('show');
+            });
+
+            btnModalYes.addEventListener('click', function() {
+                confirmModal.classList.remove('show');
+                showToast('🎉 Welcome to Appyatu!', 'success');
+                setTimeout(() => {
+                    showScreen('home');
+                    refreshHomeData();
+                }, 400);
+            });
+
+            btnModalNo.addEventListener('click', function() {
+                confirmModal.classList.remove('show');
+                showToast('Location is fixed for this demo', 'error');
+            });
+
+            // Close modal on overlay click
+            confirmModal.addEventListener('click', function(e) {
+                if (e.target === confirmModal) {
+                    confirmModal.classList.remove('show');
+                }
+            });
+
+            // ============ HOME SCREEN ============
+            function refreshHomeData() {
+                const received = reports.filter(r => r.status === 'received').length;
+                const inProgress = reports.filter(r => r.status === 'in-progress').length;
+                const resolved = reports.filter(r => r.status === 'resolved').length;
+                statReceived.textContent = received;
+                statInProgress.textContent = inProgress;
+                statResolved.textContent = resolved;
+                renderCommunityFeed();
+                if (homeMap) updateHomeMapMarkers();
+            }
+
+            function renderCommunityFeed() {
+                const sorted = [...reports].sort((a, b) => b.votes - a.votes).slice(0, 5);
+                communityFeed.innerHTML = sorted.map(r => {
+                    const statusClass = r.status === 'received' ? 'status-received' : r.status ===
+                        'in-progress' ? 'status-progress' : 'status-resolved';
+                    const statusBadge = r.status === 'received' ? 'status-badge-received' : r.status ===
+                        'in-progress' ? 'status-badge-progress' : 'status-badge-resolved';
+                    const statusLabel = r.status === 'received' ? 'Received' : r.status === 'in-progress' ?
+                        'In Progress' : 'Resolved';
+                    const typeEmoji = r.type === 'pothole' ? '🕳️' : r.type === 'streetlight' ? '💡' : r.type ===
+                        'waste' ? '🗑️' : r.type === 'water' ? '💧' : '📋';
+                    return `
+                    <div class="report-card ${statusClass}" data-id="${r.id}">
+                        <div class="report-header">
+                            <span class="report-title">${typeEmoji} ${r.title}</span>
+                            <span class="report-status ${statusBadge}">${statusLabel}</span>
                         </div>
-                        <p style="margin:0 0 8px 0;font-size:13px;color:#64748b;">${report.description || ''}</p>
-                        <div style="display:flex;align-items:center;justify-content:space-between;">
-                            <span style="font-size:11px;color:${getStatusColor(report.status)};background:${getStatusBg(report.status)};padding:2px 8px;border-radius:10px;">
-                                ${report.is_verified ? '✅ Verified' : getStatusText(report.status)}
-                                ${report.confirmations > 0 ? ` (${report.confirmations} confirms)` : ''}
-                            </span>
-                            <div>
-                                <button onclick="verifyReport('${report.id}', 'confirm'); event.stopPropagation();" style="background:none;border:none;color:#10b981;font-size:14px;cursor:pointer;margin-right:8px;"><i class="fas fa-check"></i></button>
-                                <button onclick="verifyReport('${report.id}', 'flag'); event.stopPropagation();" style="background:none;border:none;color:#ef4444;font-size:14px;cursor:pointer;"><i class="fas fa-flag"></i></button>
+                        <div class="report-meta">
+                            <span>📅 ${r.date}</span>
+                            <span>📍 Chalala</span>
+                            <div class="vote-btns">
+                                <button class="vote-btn ${r.userVoted ? 'upvoted' : ''}" data-vote="${r.id}" title="Upvote">👍</button>
+                                <span class="vote-count">${r.votes}</span>
                             </div>
                         </div>
-                    </div>
-                `;
-                container.appendChild(el);
+                    </div>`;
+                }).join('');
 
-                // Add marker to map
-                if (map && report.latitude && report.longitude) {
-                    const marker = L.circleMarker([report.latitude, report.longitude], {
-                        radius: 8,
-                        fillColor: categoryIcon.color,
-                        color: '#fff',
-                        weight: 2,
-                        fillOpacity: 0.8
-                    }).addTo(map).bindPopup(`
-                        <strong>${report.title}</strong><br>
-                        ${report.description || ''}<br>
-                        <small>Status: ${report.status}</small>
-                    `);
-                    // Attach report id to marker for later lookup
-                    marker.reportId = report.id;
-                    markers.push(marker);
+                // Attach vote listeners
+                communityFeed.querySelectorAll('.vote-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const id = this.dataset.vote;
+                        const report = reports.find(r => r.id === id);
+                        if (report) {
+                            if (!report.userVoted) {
+                                report.votes++;
+                                report.userVoted = true;
+                                this.classList.add('upvoted');
+                            } else {
+                                report.votes--;
+                                report.userVoted = false;
+                                this.classList.remove('upvoted');
+                            }
+                            this.nextElementSibling.textContent = report.votes;
+                            saveData();
+                        }
+                    });
+                });
+
+                // Card click shows details
+                communityFeed.querySelectorAll('.report-card').forEach(card => {
+                    card.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const r = reports.find(rp => rp.id === id);
+                        if (r) {
+                            showToast(`📋 ${r.title} — Status: ${r.status.replace('-',' ').toUpperCase()}`,
+                                'success');
+                        }
+                    });
+                });
+            }
+
+            function initHomeMap() {
+                const mapEl = document.getElementById('homeMiniMap');
+                if (!mapEl || mapEl.offsetHeight === 0) return;
+                if (typeof L === 'undefined') {
+                    mapEl.innerHTML =
+                        '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;font-size:13px;">🗺️ Map loading...</div>';
+                    return;
+                }
+                homeMap = L.map('homeMiniMap', {
+                    center: [-15.425, 28.315],
+                    zoom: 15,
+                    zoomControl: false,
+                    attributionControl: false,
+                    dragging: true,
+                    scrollWheelZoom: false,
+                });
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                }).addTo(homeMap);
+                updateHomeMapMarkers();
+                // Invalidate size after render
+                setTimeout(() => { if (homeMap) homeMap.invalidateSize(); }, 300);
+            }
+
+            function updateHomeMapMarkers() {
+                if (!homeMap || typeof L === 'undefined') return;
+                // Clear existing markers
+                homeMap.eachLayer(layer => {
+                    if (layer instanceof L.Marker) homeMap.removeLayer(layer);
+                });
+                const statusColors = { 'received': '#1565C0', 'in-progress': '#ef7d00', 'resolved': '#2E7D32' };
+                reports.forEach(r => {
+                    if (r.lat && r.lng) {
+                        const color = statusColors[r.status] || '#888';
+                        const icon = L.divIcon({
+                            className: 'custom-marker',
+                            html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>`,
+                            iconSize: [14, 14],
+                            iconAnchor: [7, 7],
+                        });
+                        L.marker([r.lat, r.lng], { icon }).addTo(homeMap)
+                            .bindPopup(`<b>${r.title}</b><br>Status: ${r.status}<br>👍 ${r.votes} votes`);
+                    }
+                });
+            }
+
+            // ============ REPORT SCREEN ============
+            function initReportMap() {
+                const container = document.getElementById('reportMapContainer');
+                if (!container || container.offsetHeight === 0) return;
+                if (typeof L === 'undefined') {
+                    container.innerHTML =
+                        '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">🗺️ Map unavailable</div>';
+                    return;
+                }
+                // Clear container
+                container.innerHTML = '';
+                const mapDiv = document.createElement('div');
+                mapDiv.style.width = '100%';
+                mapDiv.style.height = '100%';
+                container.appendChild(mapDiv);
+
+                reportMap = L.map(mapDiv, {
+                    center: [selectedLat, selectedLng],
+                    zoom: 16,
+                    zoomControl: false,
+                    attributionControl: false,
+                });
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                }).addTo(reportMap);
+
+                // Initial pin
+                reportPin = L.marker([selectedLat, selectedLng], {
+                    draggable: true,
+                }).addTo(reportMap);
+                reportPin.bindPopup('📍 Issue Location').openPopup();
+
+                reportMap.on('click', function(e) {
+                    selectedLat = e.latlng.lat;
+                    selectedLng = e.latlng.lng;
+                    if (reportPin) reportMap.removeLayer(reportPin);
+                    reportPin = L.marker([selectedLat, selectedLng], { draggable: true }).addTo(reportMap);
+                    reportPin.bindPopup('📍 Issue Location').openPopup();
+                });
+
+                reportPin.on('dragend', function() {
+                    const pos = reportPin.getLatLng();
+                    selectedLat = pos.lat;
+                    selectedLng = pos.lng;
+                });
+
+                setTimeout(() => { if (reportMap) reportMap.invalidateSize(); }, 300);
+            }
+
+            // File upload
+            fileUploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+            fileInput.addEventListener('change', function() {
+                previewContainer.innerHTML = '';
+                Array.from(fileInput.files).forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.className = 'preview-thumb';
+                            img.style.display = 'inline-block';
+                            previewContainer.appendChild(img);
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        const badge = document.createElement('span');
+                        badge.textContent = '🎬 ' + file.name;
+                        badge.style.cssText =
+                            'font-size:11px;background:#f0f0f0;padding:4px 8px;border-radius:6px;margin:2px;';
+                        previewContainer.appendChild(badge);
+                    }
+                });
+            });
+
+            // Submit report
+            btnSubmitReport.addEventListener('click', function() {
+                const type = issueType.value;
+                const desc = issueDesc.value.trim();
+                if (!type) {
+                    showToast('Please select an issue type', 'error');
+                    return;
+                }
+                if (!desc) {
+                    showToast('Please describe the issue', 'error');
+                    return;
+                }
+                const newReport = {
+                    id: 'RPT-' + String(reports.length + 1).padStart(3, '0'),
+                    title: desc.length > 40 ? desc.slice(0, 40) + '...' : desc,
+                    type: type,
+                    status: 'received',
+                    votes: 1,
+                    lat: selectedLat,
+                    lng: selectedLng,
+                    date: new Date().toISOString().split('T')[0],
+                    userVoted: true,
+                };
+                reports.unshift(newReport);
+                saveData();
+                showToast('✅ Report submitted successfully!', 'success');
+                // Reset form
+                issueType.value = '';
+                issueDesc.value = '';
+                previewContainer.innerHTML = '';
+                fileInput.value = '';
+                // Go to home
+                setTimeout(() => {
+                    showScreen('home');
+                    refreshHomeData();
+                }, 800);
+            });
+
+            document.getElementById('btnBackFromReport').addEventListener('click', function() {
+                showScreen('home');
+            });
+
+            // ============ DIRECTORY SCREEN ============
+            document.getElementById('btnBackFromDirectory').addEventListener('click', function() {
+                showScreen('home');
+            });
+
+            // ============ BOTTOM NAVIGATION ============
+            bottomNav.addEventListener('click', function(e) {
+                const navItem = e.target.closest('.nav-item');
+                if (!navItem) return;
+                const screen = navItem.dataset.screen;
+                switch (screen) {
+                    case 'home':
+                        showScreen('home');
+                        refreshHomeData();
+                        break;
+                    case 'report':
+                        showScreen('report');
+                        setTimeout(() => {
+                            if (!reportMap) initReportMap();
+                            if (reportMap) reportMap.invalidateSize();
+                        }, 400);
+                        break;
+                    case 'feed':
+                        showScreen('home');
+                        refreshHomeData();
+                        // Scroll to feed
+                        setTimeout(() => {
+                            const feedSection = document.getElementById('communityFeed');
+                            if (feedSection) feedSection.scrollIntoView({ behavior: 'smooth' });
+                        }, 300);
+                        break;
+                    case 'directory':
+                        showScreen('directory');
+                        break;
+                    case 'more':
+                        showToast('⚙️ Settings & More — coming soon!', 'success');
+                        break;
                 }
             });
-        }
 
-        function verifyReport(reportId, type) {
-            if (!currentUser) { alert('Login first'); return; }
-            const report = DB.reports.find(r => r.id === reportId);
-            if (!report) return;
-            const already = DB.verifications.find(v => v.report_id === reportId && v.user_id === currentUser.id);
-            if (already) { alert('You already verified this report'); return; }
-
-            DB.verifications.push({ report_id: reportId, user_id: currentUser.id, type, timestamp: new Date().toISOString() });
-            if (type === 'confirm') {
-                report.confirmations = (report.confirmations || 0) + 1;
-                if (report.confirmations >= 3) report.is_verified = true;
-                userProfile.reports_verified += 1;
-                userProfile.trust_score += 5;
-                document.getElementById('trustScoreBadge').textContent = `Score: ${userProfile.trust_score}`;
-            } else {
-                report.flags = (report.flags || 0) + 1;
-            }
-            saveDB();
-            alert(`Report ${type === 'confirm' ? 'confirmed' : 'flagged'}!`);
-            loadReports(); // refresh
-        }
-
-        // ==================== CDF Projects ====================
-        function loadCDFProjects() {
-            const container = document.getElementById('cdfProjects');
-            container.innerHTML = '';
-            DB.cdf_projects.forEach(proj => {
-                const el = document.createElement('div');
-                el.style.cssText = "background:white;border-radius:16px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,0.08);margin-bottom:16px;";
-                el.innerHTML = `
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
-                        <div>
-                            <h3 style="margin:0 0 6px;font-size:17px;font-weight:700;color:#1e293b;">${proj.title}</h3>
-                            <p style="margin:0;font-size:13px;color:#64748b;">${proj.description || ''}</p>
-                        </div>
-                        <span style="background:#fef3c7;color:#ea580c;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;">${proj.progress}% Complete</span>
-                    </div>
-                    <div style="margin-bottom:20px;">
-                        <div style="height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;">
-                            <div style="width:${proj.progress}%;height:100%;background:#ea580c;"></div>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;margin-top:6px;">
-                            <span style="font-size:11px;color:#64748b;">K ${(proj.spent/1000000).toFixed(2)}M spent</span>
-                            <span style="font-size:11px;color:#64748b;">K ${(proj.budget/1000000).toFixed(2)}M budget</span>
-                        </div>
-                    </div>
-                    <div style="font-size:12px;color:#64748b;"><i class="fas fa-calendar" style="margin-right:6px;"></i>${proj.start_date} - ${proj.end_date}</div>
-                `;
-                container.appendChild(el);
+            // ============ FAB ============
+            fabReport.addEventListener('click', function() {
+                showScreen('report');
+                setTimeout(() => {
+                    if (!reportMap) initReportMap();
+                    if (reportMap) reportMap.invalidateSize();
+                }, 400);
             });
-        }
 
-        // ==================== User Profile ====================
-        function loadUserStats() {
-            if (!userProfile) return;
-            document.getElementById('userInfo').innerHTML = `
-                <span style="background:#10b981;color:white;padding:4px 8px;border-radius:12px;font-size:12px;font-weight:600;">Score: ${userProfile.trust_score}</span>
-                <button onclick="showProfile()" style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:6px 12px;color:#475569;font-size:12px;cursor:pointer;"><i class="fas fa-user"></i> Profile</button>
-                <button onclick="logout()" style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:6px 12px;color:#ef4444;font-size:12px;cursor:pointer;"><i class="fas fa-sign-out-alt"></i></button>
-            `;
-        }
+            // ============ NOTIFICATIONS ============
+            document.getElementById('btnNotifications').addEventListener('click', function() {
+                showToast('🔔 3 new updates on your reports!', 'success');
+                // Simulate clearing badge
+                const badge = this.querySelector('.notif-badge');
+                if (badge) badge.style.display = 'none';
+                setTimeout(() => { if (badge) badge.style.display = ''; }, 3000);
+            });
 
-        function showProfile() {
-            if (!userProfile) return;
-            document.getElementById('profileContent').innerHTML = `
-                <div style="text-align:center;margin-bottom:24px;">
-                    <div style="width:80px;height:80px;background:linear-gradient(135deg,#2563eb,#1d4ed8);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-                        <i class="fas fa-user" style="color:white;font-size:40px;"></i>
-                    </div>
-                    <h3 style="margin:0 0 8px;font-size:20px;color:#1e293b;">${userProfile.full_name || 'Community Member'}</h3>
-                    <p style="margin:0;color:#64748b;">${userProfile.phone}</p>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">
-                    <div style="background:#f8fafc;border-radius:12px;padding:16px;text-align:center;">
-                        <div style="font-weight:700;font-size:24px;color:#2563eb;">${userProfile.trust_score}</div>
-                        <div style="font-size:12px;color:#64748b;">Trust Score</div>
-                    </div>
-                    <div style="background:#f8fafc;border-radius:12px;padding:16px;text-align:center;">
-                        <div style="font-weight:700;font-size:24px;color:#10b981;">${userProfile.reports_submitted}</div>
-                        <div style="font-size:12px;color:#64748b;">Submitted</div>
-                    </div>
-                    <div style="background:#f8fafc;border-radius:12px;padding:16px;text-align:center;">
-                        <div style="font-weight:700;font-size:24px;color:#f59e0b;">${userProfile.reports_verified}</div>
-                        <div style="font-size:12px;color:#64748b;">Verified</div>
-                    </div>
-                    <div style="background:#f8fafc;border-radius:12px;padding:16px;text-align:center;">
-                        <div style="font-weight:700;font-size:24px;color:#8b5cf6;">${Math.floor(userProfile.trust_score/10)}</div>
-                        <div style="font-size:12px;color:#64748b;">Level</div>
-                    </div>
-                </div>
-                <div style="background:#fef3c7;border-radius:12px;padding:16px;margin-bottom:20px;border-left:4px solid #f59e0b;">
-                    <h4 style="margin:0 0 8px;font-size:16px;color:#92400e;"><i class="fas fa-star" style="margin-right:8px;"></i>Trust Score Benefits</h4>
-                    <ul style="margin:0;padding-left:20px;font-size:14px;color:#92400e;">
-                        <li>Higher score = Faster community verification</li>
-                        <li>Priority in CDF project discussions</li>
-                        <li>Eligibility for community moderator role</li>
-                    </ul>
-                </div>
-                <button onclick="closeProfileModal()" style="width:100%;background:#2563eb;color:white;border:none;border-radius:12px;padding:16px;font-size:16px;font-weight:600;cursor:pointer;">Close</button>
-            `;
-            document.getElementById('profileModal').style.display = 'flex';
-        }
-
-        function closeProfileModal() {
-            document.getElementById('profileModal').style.display = 'none';
-        }
-
-        function showMyReports() {
-            document.getElementById('reportFilter').value = 'nearby';
-            loadReports('nearby');
-        }
-
-        function showSection(sectionId) {
-            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // ==================== Helpers ====================
-        function timeAgo(date) {
-            const seconds = Math.floor((new Date() - date) / 1000);
-            if (seconds < 60) return 'Just now';
-            const mins = Math.floor(seconds / 60);
-            if (mins < 60) return mins + 'm ago';
-            const hrs = Math.floor(mins / 60);
-            if (hrs < 24) return hrs + 'h ago';
-            const days = Math.floor(hrs / 24);
-            return days + 'd ago';
-        }
-
-        function getStatusColor(status) {
-            return { pending: '#f59e0b', in_progress: '#0ea5e9', resolved: '#10b981', rejected: '#ef4444' }[status] || '#64748b';
-        }
-        function getStatusBg(status) {
-            return { pending: '#fef3c7', in_progress: '#e0f2fe', resolved: '#d1fae5', rejected: '#fee2e2' }[status] || '#f1f5f9';
-        }
-        function getStatusText(status) {
-            return { pending: '🟡 Pending', in_progress: '🟠 In Progress', resolved: '✅ Resolved', rejected: '❌ Rejected' }[status] || status;
-        }
-
-        // ==================== Init ====================
-        document.addEventListener('DOMContentLoaded', () => {
-            setupOTPInputs();
-            const session = localStorage.getItem('chalala_session');
-            if (session) {
-                const { userId, phone, timestamp } = JSON.parse(session);
-                if (Date.now() - timestamp < 7 * 24 * 60 * 60 * 1000) {
-                    loginUser(userId, phone);
-                    document.getElementById('appContent').style.display = 'block';
-                } else {
-                    localStorage.removeItem('chalala_session');
-                    showAuthModal();
+            document.getElementById('btnRefresh').addEventListener('click', function() {
+                refreshHomeData();
+                if (homeMap) {
+                    homeMap.invalidateSize();
+                    updateHomeMapMarkers();
                 }
-            } else {
-                showAuthModal();
-            }
-        });
+                showToast('🔄 Refreshed!', 'success');
+            });
 
-        // Additional dummy functions
-        function selectOnMap() { alert('Map selection not implemented in demo'); }
-        function resendOTP() { sendOTP(); }
+            // ============ ONLINE/OFFLINE ============
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+            updateOnlineStatus();
+
+            // ============ TIME UPDATE ============
+            updateTime();
+            setInterval(updateTime, 30000);
+
+            // ============ KEYBOARD SHORTCUTS ============
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    if (confirmModal.classList.contains('show')) {
+                        confirmModal.classList.remove('show');
+                    }
+                }
+            });
+
+            // ============ INITIALIZATION ============
+            function init() {
+                showScreen('login');
+                updateFab('login');
+                bottomNav.style.display = 'none';
+                // Show bottom nav only for main screens
+                const origShowScreen = showScreen;
+                showScreen = function(screenId) {
+                    origShowScreen(screenId);
+                    if (['home', 'report', 'directory'].includes(screenId)) {
+                        bottomNav.style.display = 'flex';
+                    } else if (screenId === 'feed') {
+                        bottomNav.style.display = 'flex';
+                    } else {
+                        bottomNav.style.display = 'none';
+                    }
+                    updateFab(screenId);
+                };
+                showScreen('login');
+                bottomNav.style.display = 'none';
+                updateFab('login');
+            }
+
+            // Override showScreen to handle bottom nav visibility
+            const originalShowScreen = showScreen;
+            showScreen = function(screenId) {
+                originalShowScreen(screenId);
+                if (['home', 'report', 'directory', 'feed'].includes(screenId) || screenId === 'home') {
+                    bottomNav.style.display = 'flex';
+                } else if (['login', 'otp', 'intro'].includes(screenId)) {
+                    bottomNav.style.display = 'none';
+                }
+                updateFab(screenId);
+                // Invalidate maps
+                setTimeout(() => {
+                    if (homeMap && screenId === 'home') homeMap.invalidateSize();
+                    if (reportMap && screenId === 'report') reportMap.invalidateSize();
+                }, 500);
+            };
+
+            init();
+
+            // ============ SERVICE WORKER REGISTRATION (Offline Support) ============
+            if ('serviceWorker' in navigator) {
+                // In production, register a service worker for offline caching
+                // navigator.serviceWorker.register('/sw.js').catch(() => {});
+                console.log('💡 Service Worker ready for offline support (register in production)');
+            }
+
+            // ============ EXPOSE FOR DEBUG ============
+            console.log('🌍 Appyatu Platform Ready');
+            console.log('📍 Lusaka Province • Kabwata Constituency • Chalala Ward');
+            console.log('👤 Anonymous Reporting Enabled');
+            console.log('📱 Demo OTP: 123456');
+            console.log('💾 Reports saved in localStorage');
+            console.log('🗺️ Map: OpenStreetMap via Leaflet.js');
+            console.log('📡 Offline support: Drafts saved locally');
+
+        })();
     </script>
-
-    <style>
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .leaflet-container { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        button:hover { opacity: 0.9; transform: translateY(-1px); transition: all 0.2s ease; }
-        #reportModal > div, #profileModal > div, #authModal > div { animation: slideUp 0.3s ease-out; }
-        @media (min-width: 768px) { main { max-width: 600px !important; margin: 0 auto !important; } }
-    </style>
 </body>
 </html>
