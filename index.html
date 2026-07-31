@@ -1,220 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quantum Minds Technologies | Manufacturing Excellence</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vine Bible Ministries – Church & Community School</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
-        /* ===== ROOT VARIABLES ===== */
+        /* Base Styles & Variables – Updated Color Scheme */
         :root {
-            --blue: #1a56db;
-            --deep-blue: #0d3b8c;
-            --black: #0a0a0f;
-            --dark-bg: #0d0d18;
-            --purple: #7c3aed;
-            --deep-purple: #4c1d95;
-            --white: #f0f0f5;
-            --dim-yellow: #c9a84c;
-            --dim-yellow-dark: #a88a30;
-            --card-bg: #111122;
-            --nav-bg: rgba(10, 10, 20, 0.95);
-            --glow-blue: rgba(26, 86, 219, 0.5);
-            --glow-purple: rgba(124, 58, 237, 0.5);
-            --glow-yellow: rgba(201, 168, 76, 0.4);
+            --primary: #0d1df0;      /* navy blue */
+            --primary-dark: #061220;
+            --secondary: #800020;    /* burgundy (berg) */
+            --secondary-dark: #4a0010;
+            --accent: #F5D772;       /* light gold */
+            --accent-dark: #dbb042;
+            --red: #C41E3A;          /* red for buttons & highlights */
+            --light: #f8f9fa;
+            --dark: #2d3748;
+            --gray: #718096;
+            --success: #48bb78;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-            scroll-padding-top: 70px;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
-            background: var(--black);
-            color: var(--white);
+            background-color: #f5f7fa;
+            color: var(--dark);
             line-height: 1.6;
             overflow-x: hidden;
-            min-height: 100vh;
         }
 
-        /* ===== LASER CANVAS ===== */
-        #laserCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 0;
-            pointer-events: none;
-            opacity: 0.7;
-        }
-
-        /* ===== NAVBAR ===== */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            background: var(--nav-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(124, 58, 237, 0.3);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
-        }
-
-        .navbar.scrolled {
-            box-shadow: 0 8px 40px rgba(124, 58, 237, 0.3);
-            border-bottom: 1px solid rgba(124, 58, 237, 0.6);
-        }
-
-        .nav-container {
-            max-width: 1300px;
+        .container {
+            width: 90%;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Moving Words Bar */
+        .moving-words-bar {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 12px 0;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 118px;
+            z-index: 900;
+        }
+
+        .moving-words-container {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 25px;
-            height: 68px;
+            white-space: nowrap;
+            animation: moveWords 40s linear infinite;
         }
 
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: var(--white);
-            font-weight: 700;
-            font-size: 1.25rem;
-            letter-spacing: 0.5px;
-            z-index: 1001;
-        }
-
-        .nav-logo .logo-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--blue), var(--purple));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            color: #fff;
-            box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
-            animation: logoPulse 3s ease-in-out infinite;
-        }
-
-        @keyframes logoPulse {
-            0%,
-            100% {
-                box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
-            }
-            50% {
-                box-shadow: 0 0 35px rgba(124, 58, 237, 0.8), 0 0 60px rgba(26, 86, 219, 0.4);
-            }
-        }
-
-        .nav-logo span {
-            background: linear-gradient(135deg, #ffffff, #c9d8f8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #c5c5d8;
+        .moving-word {
+            display: inline-block;
+            padding: 0 40px;
+            font-size: 1.1rem;
             font-weight: 500;
-            font-size: 0.95rem;
-            padding: 9px 18px;
-            border-radius: 25px;
-            transition: all 0.3s ease;
             position: relative;
-            letter-spacing: 0.3px;
         }
 
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: #fff;
-            background: rgba(124, 58, 237, 0.2);
-            box-shadow: 0 0 20px rgba(124, 58, 237, 0.25);
+        .moving-word i {
+            margin-right: 8px;
+            color: var(--accent);   /* light gold icons */
         }
 
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 2px;
-            left: 50%;
-            transform: translateX(-50%) scaleX(0);
-            width: 20px;
-            height: 2px;
-            background: var(--dim-yellow);
-            border-radius: 2px;
-            transition: transform 0.3s ease;
+        @keyframes moveWords {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-200%); }
         }
 
-        .nav-links a:hover::after,
-        .nav-links a.active::after {
-            transform: translateX(-50%) scaleX(1);
-        }
-
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            gap: 5px;
-            z-index: 1001;
-            padding: 8px;
-        }
-
-        .hamburger span {
-            width: 28px;
-            height: 3px;
-            background: var(--white);
-            border-radius: 3px;
-            transition: all 0.3s ease;
-        }
-
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 6px);
-            background: var(--dim-yellow);
-        }
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-            transform: scaleX(0);
-        }
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -6px);
-            background: var(--dim-yellow);
-        }
-
-        /* ===== HERO SLIDER ===== */
-        .hero-slider {
-            position: relative;
-            z-index: 1;
+        /* Welcome Banner */
+        .welcome-banner {
             height: 100vh;
             min-height: 700px;
+            position: relative;
             overflow: hidden;
-            margin-top: 0;
-            padding-top: 68px;
         }
 
-        .hero-slides-wrapper {
+        .welcome-slideshow {
             position: absolute;
             top: 0;
             left: 0;
@@ -222,7 +95,7 @@
             height: 100%;
         }
 
-        .hero-slide-item {
+        .welcome-slide {
             position: absolute;
             top: 0;
             left: 0;
@@ -237,556 +110,335 @@
             justify-content: center;
         }
 
-        .hero-slide-item.active {
+        .welcome-slide.active {
             opacity: 1;
         }
 
-        .hero-slide-item:nth-child(1) {
-            background:
-                linear-gradient(rgba(10, 10, 20, 0.55), rgba(10, 10, 20, 0.55)),
-                radial-gradient(ellipse at 30% 50%, rgba(26, 86, 219, 0.25) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 30%, rgba(124, 58, 237, 0.3) 0%, transparent 60%);
-            background-color: #0a0a1a;
-        }
-        .hero-slide-item:nth-child(2) {
-            background:
-                linear-gradient(rgba(10, 10, 20, 0.55), rgba(10, 10, 20, 0.55)),
-                radial-gradient(ellipse at 60% 40%, rgba(124, 58, 237, 0.3) 0%, transparent 60%),
-                radial-gradient(ellipse at 30% 60%, rgba(26, 86, 219, 0.25) 0%, transparent 60%);
-            background-color: #0d0d1a;
-        }
-        .hero-slide-item:nth-child(3) {
-            background:
-                linear-gradient(rgba(10, 10, 20, 0.55), rgba(10, 10, 20, 0.55)),
-                radial-gradient(ellipse at 50% 50%, rgba(26, 86, 219, 0.3) 0%, transparent 55%),
-                radial-gradient(ellipse at 25% 70%, rgba(201, 168, 76, 0.2) 0%, transparent 50%);
-            background-color: #0a0a1a;
-        }
-        .hero-slide-item:nth-child(4) {
-            background:
-                linear-gradient(rgba(10, 10, 20, 0.55), rgba(10, 10, 20, 0.55)),
-                radial-gradient(ellipse at 40% 30%, rgba(201, 168, 76, 0.2) 0%, transparent 55%),
-                radial-gradient(ellipse at 70% 60%, rgba(26, 86, 219, 0.3) 0%, transparent 60%);
-            background-color: #0d0d1a;
-        }
+        .slide1 { background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('images/service4.jpg'); }
+        .slide2 { background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('images/all\ \(1\).jpg'); }
+        .slide3 { background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('images/child2.jpg'); }
+        .slide4 { background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('images/ministry.jpg'); }
 
-        .hero-slide-content {
+        .welcome-content {
             position: relative;
-            z-index: 2;
+            z-index: 10;
             text-align: center;
-            padding: 30px;
-            max-width: 850px;
-        }
-
-        .hero-slide-content .hero-badge {
-            display: inline-block;
-            background: rgba(124, 58, 237, 0.25);
-            border: 1px solid rgba(124, 58, 237, 0.5);
-            color: #c9a8f8;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            animation: fadeInUp 0.8s ease forwards;
-        }
-
-        .hero-slide-content h1 {
-            font-size: clamp(2.2rem, 5vw, 3.8rem);
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, #ffffff 0%, #c9d8f8 40%, #d4b8f8 70%, #f0e0b0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: fadeInUp 0.8s ease 0.15s forwards;
-            opacity: 0;
-            animation-fill-mode: forwards;
-        }
-
-        .hero-slide-content p {
-            font-size: 1.15rem;
-            color: #b8b8d0;
-            margin-bottom: 30px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            animation: fadeInUp 0.8s ease 0.3s forwards;
-            opacity: 0;
-            animation-fill-mode: forwards;
-        }
-
-        .hero-slide-content .hero-btns {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-            animation: fadeInUp 0.8s ease 0.45s forwards;
-            opacity: 0;
-            animation-fill-mode: forwards;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .btn {
-            padding: 13px 30px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.35s ease;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--blue), var(--purple));
-            color: #fff;
-            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.4);
-        }
-        .btn-primary:hover {
-            box-shadow: 0 12px 40px rgba(124, 58, 237, 0.7);
-            transform: translateY(-3px);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: #fff;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-        }
-        .btn-outline:hover {
-            border-color: var(--dim-yellow);
-            color: var(--dim-yellow);
-            box-shadow: 0 0 25px rgba(201, 168, 76, 0.3);
-            transform: translateY(-3px);
-        }
-
-        .slide-indicators {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 3;
-            display: flex;
-            gap: 10px;
-        }
-        .slide-indicators span {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .slide-indicators span.active {
-            background: var(--dim-yellow);
-            box-shadow: 0 0 12px var(--dim-yellow);
-            width: 30px;
-            border-radius: 10px;
-        }
-
-        /* ===== ABOUT ===== */
-        .about {
-            position: relative;
-            z-index: 1;
-            padding: 100px 25px;
-            overflow: hidden;
-            background: rgba(13, 13, 24, 0.85);
-            min-height: 500px;
-        }
-
-        .floating-icons-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .floating-icon {
-            position: absolute;
-            font-size: 2.5rem;
-            opacity: 0.18;
-            color: var(--dim-yellow);
-            animation: floatSwing180 6s ease-in-out infinite;
-            filter: blur(0.5px);
-            transition: all 0.5s ease;
-        }
-        .floating-icon:nth-child(1) {
-            top: 10%;
-            left: 8%;
-            animation-delay: 0s;
-            color: #60a5fa;
-        }
-        .floating-icon:nth-child(2) {
-            top: 15%;
-            right: 10%;
-            animation-delay: 0.8s;
-            color: #a78bfa;
-            font-size: 3rem;
-        }
-        .floating-icon:nth-child(3) {
-            top: 55%;
-            left: 5%;
-            animation-delay: 1.6s;
-            color: #c9a84c;
-            font-size: 2rem;
-        }
-        .floating-icon:nth-child(4) {
-            top: 60%;
-            right: 8%;
-            animation-delay: 2.4s;
-            color: #60a5fa;
-            font-size: 3.2rem;
-        }
-        .floating-icon:nth-child(5) {
-            top: 30%;
-            left: 50%;
-            animation-delay: 3.2s;
-            color: #a78bfa;
-            font-size: 2.8rem;
-        }
-        .floating-icon:nth-child(6) {
-            top: 70%;
-            left: 40%;
-            animation-delay: 4s;
-            color: #c9a84c;
-            font-size: 2.4rem;
-        }
-        .floating-icon:nth-child(7) {
-            top: 20%;
-            left: 75%;
-            animation-delay: 1.2s;
-            color: #60a5fa;
-            font-size: 2.2rem;
-        }
-        .floating-icon:nth-child(8) {
-            top: 75%;
-            left: 70%;
-            animation-delay: 2s;
-            color: #a78bfa;
-            font-size: 2.6rem;
-        }
-
-        @keyframes floatSwing180 {
-            0% {
-                transform: rotate(-90deg) translateX(0px) scale(1);
-                opacity: 0.12;
-            }
-            25% {
-                transform: rotate(-45deg) translateX(20px) scale(1.15);
-                opacity: 0.25;
-            }
-            50% {
-                transform: rotate(0deg) translateX(0px) scale(1.05);
-                opacity: 0.18;
-            }
-            75% {
-                transform: rotate(45deg) translateX(-20px) scale(1.15);
-                opacity: 0.25;
-            }
-            100% {
-                transform: rotate(90deg) translateX(0px) scale(1);
-                opacity: 0.12;
-            }
-        }
-
-        .about-content {
-            position: relative;
-            z-index: 2;
+            color: white;
+            padding: 0 20px;
             max-width: 900px;
-            margin: 0 auto;
-            text-align: center;
-            background: rgba(17, 17, 34, 0.8);
-            border: 1px solid rgba(124, 58, 237, 0.25);
-            border-radius: 20px;
-            padding: 50px 35px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: fadeInUp 1.5s ease;
         }
 
-        .about-content h2 {
-            font-size: 2.4rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #fff;
-            letter-spacing: -0.3px;
-        }
-        .about-content h2 .highlight {
-            color: var(--dim-yellow);
-            position: relative;
-        }
-        .about-content p {
-            color: #b8b8d0;
-            font-size: 1.05rem;
-            line-height: 1.8;
-            margin-bottom: 15px;
-        }
-        .about-stats {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 30px;
-        }
-        .stat-item {
-            text-align: center;
-            min-width: 100px;
-        }
-        .stat-item .stat-num {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--blue), var(--purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .stat-item .stat-label {
-            font-size: 0.85rem;
-            color: #8888aa;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* ===== PRODUCTS & SERVICES ===== */
-        .products {
-            position: relative;
-            z-index: 1;
-            padding: 100px 25px;
-            background: rgba(10, 10, 20, 0.9);
-        }
-        .products h2 {
-            text-align: center;
-            font-size: 2.4rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #fff;
-        }
-        .products .subtitle {
-            text-align: center;
-            color: #8888aa;
-            margin-bottom: 50px;
-            font-size: 1rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .product-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 0;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-            cursor: default;
-        }
-        .product-card:hover {
-            border-color: rgba(124, 58, 237, 0.5);
-            transform: translateY(-8px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(124, 58, 237, 0.2);
-        }
-        .product-card .card-image {
-            width: 100%;
-            height: 180px;
-            background-size: cover;
-            background-position: center;
-            border-radius: 16px 16px 0 0;
-            position: relative;
-            transition: transform 0.4s ease;
-        }
-        .product-card:hover .card-image {
-            transform: scale(1.02);
-        }
-        .product-card .card-body {
-            padding: 25px 20px 30px;
-            position: relative;
-            z-index: 1;
-        }
-        .product-card h3 {
+        .welcome-badge {
+            display: inline-block;
+            background-color: var(--red);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
             font-size: 1.2rem;
             font-weight: 600;
-            color: #fff;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-        }
-        .product-card p {
-            font-size: 0.9rem;
-            color: #9999b8;
-            position: relative;
-            z-index: 1;
-            line-height: 1.6;
+            margin-bottom: 30px;
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
         }
 
-        /* ===== PINTEREST SPLIT-MOTION SHOWCASE ===== */
-        .pinterest-showcase {
-            position: relative;
-            z-index: 1;
-            padding: 100px 25px;
-            background: #09090f;
-            overflow: hidden;
-            border-top: 1px solid rgba(124, 58, 237, 0.15);
-            border-bottom: 1px solid rgba(124, 58, 237, 0.15);
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
-        .pinterest-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 50px;
-        }
-        .pinterest-text {
-            flex: 1;
-            max-width: 480px;
-        }
-        .pinterest-text h2 {
-            font-size: clamp(2rem, 4vw, 2.8rem);
-            font-weight: 800;
+
+        .welcome-content h1 {
+            font-size: 4rem;
+            margin-bottom: 25px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
             line-height: 1.2;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #ffffff 0%, #c9d8f8 60%, #c9a84c 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
-        .pinterest-text p {
-            font-size: 1.2rem;
-            color: #a5a5c5;
-            margin-bottom: 35px;
+
+        .welcome-content p {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
         }
-        .pinterest-motion-grid {
-            flex: 1.2;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            height: 520px;
-            overflow: hidden;
-            position: relative;
-            mask-image: linear-gradient(to bottom, transparent 0%, #000 15%, #000 85%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 15%, #000 85%, transparent 100%);
-        }
-        .pinterest-column {
+
+        .welcome-stats {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 50px;
+            flex-wrap: wrap;
         }
-        /* Continuous Video-Like Loops */
-        .column-up {
-            animation: scrollUp 22s linear infinite;
-        }
-        .column-down {
-            animation: scrollDown 22s linear infinite;
-        }
-        .pinterest-motion-grid:hover .pinterest-column {
-            animation-play-state: paused;
-        }
-        @keyframes scrollUp {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-50%); }
-        }
-        @keyframes scrollDown {
-            0% { transform: translateY(-50%); }
-            100% { transform: translateY(0); }
-        }
-        .pin-item {
+
+        
+        /* Header & Navigation */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            position: fixed;
+            top: 0;
             width: 100%;
-            border-radius: 16px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
         }
-        .pin-item::before {
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-circle {
+            width: 100px;
+            height: 80px;
+            border-radius: 50%;
+            background-image: url(logo/VINEBIBLECHURCH.png);
+            background-size: contain;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid var(--light);
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .logo-circle span {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .logo-text h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .logo-text p {
+            font-size: 0.9rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            position: relative;
+            padding: 8px 0;
+            transition: color 0.3s ease;
+        }
+
+        nav a::after {
             content: '';
             position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, transparent 40%, rgba(10, 10, 15, 0.85) 100%);
-            z-index: 1;
-        }
-        .pin-item:hover {
-            transform: scale(1.03);
-            border-color: rgba(124, 58, 237, 0.4);
-            box-shadow: 0 15px 35px rgba(124, 58, 237, 0.2);
-        }
-        .pin-item i {
-            font-size: 1.8rem;
-            color: var(--dim-yellow);
-            margin-bottom: 12px;
-            position: relative;
-            z-index: 2;
-        }
-        .pin-item h4 {
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: #fff;
-            position: relative;
-            z-index: 2;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: var(--secondary);
+            transition: width 0.3s ease;
         }
 
-        /* ===== SERVICES SLIDER ===== */
-        .services-slider-section {
-            position: relative;
-            z-index: 1;
+        nav a:hover::after,
+        nav a.active::after {
+            width: 100%;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: var(--primary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        /* Notice Board Section */
+        .notice-board-section {
             padding: 80px 0;
-            background: rgba(10, 10, 20, 0.85);
+            background-color: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            color: var(--primary);
+            font-size: 2.8rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 5px;
+            background-color: var(--accent);
+            border-radius: 5px;
+        }
+
+        .section-title p {
+            color: var(--gray);
+            max-width: 700px;
+            margin: 20px auto 0;
+            font-size: 1.2rem;
+        }
+
+        .notice-board-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+        }
+
+        .announcements {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             overflow: hidden;
+            border: 1px solid #e2e8f0;
         }
-        .services-slider-section h2 {
-            text-align: center;
-            font-size: 2.4rem;
-            font-weight: 700;
+
+        .announcements-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .announcements-header h3 {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .announcements-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .announcement-item {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+        }
+
+        .announcement-item:hover {
+            background-color: #f7fafc;
+            border-left-color: var(--secondary);
+            transform: translateX(5px);
+        }
+
+        .announcement-date {
+            display: inline-block;
+            background-color: var(--accent);
+            color: var(--dark);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .announcement-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .quick-links {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .quick-links h3 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background-color: #f7fafc;
+            border-radius: 10px;
             margin-bottom: 15px;
-            color: #fff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--dark);
         }
-        .services-slider-section .subtitle {
-            text-align: center;
-            color: #8888aa;
-            margin-bottom: 40px;
-            font-size: 1rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+
+        .link-item:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateX(10px);
         }
+
+        .link-item i {
+            font-size: 1.3rem;
+            color: var(--secondary);
+        }
+
+        .link-item:hover i {
+            color: var(--accent);
+        }
+
+        /* Services Slider Section */
+        .services-slider-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+        }
+
         .services-slider {
             position: relative;
             height: 400px;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-            max-width: 1100px;
-            margin: 0 auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
-        .services-slide-item {
+
+        .services-slide {
             position: absolute;
             top: 0;
             left: 0;
@@ -800,455 +452,236 @@
             align-items: center;
             justify-content: center;
         }
-        .services-slide-item.active {
+
+        .services-slide.active {
             opacity: 1;
         }
-        .services-slide-item .slide-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(10, 10, 20, 0.55);
-            z-index: 1;
-        }
-        .services-slide-item .slide-content {
-            position: relative;
-            z-index: 2;
+
+        .services-slide1 { background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('images/empower.jpg'); }
+        .services-slide2 { background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('images/child3.jpg'); }
+        .services-slide3 { background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('images/all\ \(1\).jpg'); }
+        .services-slide4 { background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('images/all\ \(2\).jpg'); }
+        .services-slide5 { background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('images/children1.jpg'); }
+
+        .slide-content {
             text-align: center;
-            color: #fff;
+            color: white;
             max-width: 800px;
             padding: 0 20px;
         }
-        .services-slide-item .slide-content h3 {
+
+        .slide-content h3 {
             font-size: 2.5rem;
             margin-bottom: 20px;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
-        }
-        .services-slide-item .slide-content p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
-        }
-        .services-slide-item:nth-child(1) {
-            background:
-                linear-gradient(rgba(10, 10, 20, 0.4), rgba(10, 10, 20, 0.4)),
-                radial-gradient(ellipse at 30% 40%, rgba(26, 86, 219, 0.3) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 60%, rgba(124, 58, 237, 0.3) 0%, transparent 60%);
-            background-color: #0d1b3e;
-        }
-        .services-slide-item:nth-child(2) {
-            background:
-                linear-gradient(rgba(10, 10, 20, 0.4), rgba(10, 10, 20, 0.4)),
-                radial-gradient(ellipse at 50% 30%, rgba(201, 168, 76, 0.25) 0%, transparent 55%),
-                radial-gradient(ellipse at 60% 70%, rgba(124, 58, 237, 0.25) 0%, transparent 55%);
-            background-color: #1a0d2e;
-        }
-        .services-slide-item:nth-child(3) {
-            background:
-                linear-gradient(rgba(10, 10, 20, 0.4), rgba(10, 10, 20, 0.4)),
-                radial-gradient(ellipse at 40% 50%, rgba(26, 86, 219, 0.3) 0%, transparent 55%),
-                radial-gradient(ellipse at 70% 30%, rgba(201, 168, 76, 0.2) 0%, transparent 50%);
-            background-color: #0d1b3e;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
-        /* ============================================================
-               CONTACT — redesigned like "Our Services" from reference
-               ============================================================ */
-        .contact {
+        .slide-content p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+
+        /* Services Grid (Ministries) – now with sliding images */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .service-img {
             position: relative;
-            z-index: 1;
-            padding: 100px 25px;
-            background: #0d0d1a;
+            height: 200px;
             overflow: hidden;
         }
 
-        .contact .floating-icons-container {
+        .img-slide {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
-            pointer-events: none;
+            background-size: cover;
+            background-position: center;
+            transition: opacity 1s ease-in-out;
+            opacity: 0;
+        }
+
+        .img-slide:first-child {
+            opacity: 1;
+        }
+
+        .service-content {
+            padding: 25px;
+        }
+
+        .service-content h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        /* Community Cards Section */
+        .community-section {
+            padding: 80px 0;
+            background: white;
+        }
+        .community-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .community-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             overflow: hidden;
+            transition: transform 0.3s ease;
+            text-align: center;
+            border: 1px solid #e2e8f0;
         }
-        .contact .floating-icons-container .floating-icon {
-            position: absolute;
-            font-size: 2.5rem;
-            opacity: 0.15;
-            color: var(--dim-yellow);
-            animation: floatSwing180 6s ease-in-out infinite;
-            filter: blur(0.5px);
+        .community-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
         }
-        .contact .floating-icons-container .floating-icon:nth-child(1) {
-            top: 8%;
-            left: 6%;
-            animation-delay: 0.2s;
-            color: #60a5fa;
-            font-size: 2.8rem;
-        }
-        .contact .floating-icons-container .floating-icon:nth-child(2) {
-            top: 12%;
-            right: 8%;
-            animation-delay: 1s;
-            color: #a78bfa;
-            font-size: 3.2rem;
-        }
-        .contact .floating-icons-container .floating-icon:nth-child(3) {
-            top: 50%;
-            left: 4%;
-            animation-delay: 1.8s;
-            color: #c9a84c;
-            font-size: 2.2rem;
-        }
-        .contact .floating-icons-container .floating-icon:nth-child(4) {
-            top: 55%;
-            right: 5%;
-            animation-delay: 2.6s;
-            color: #60a5fa;
+        .community-icon {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 30px;
+            color: white;
             font-size: 3rem;
         }
-        .contact .floating-icons-container .floating-icon:nth-child(5) {
-            top: 25%;
-            left: 45%;
-            animation-delay: 3.4s;
-            color: #a78bfa;
-            font-size: 2.6rem;
-        }
-        .contact .floating-icons-container .floating-icon:nth-child(6) {
-            top: 72%;
-            left: 35%;
-            animation-delay: 4.2s;
-            color: #c9a84c;
-            font-size: 2.4rem;
-        }
-        .contact .floating-icons-container .floating-icon:nth-child(7) {
-            top: 18%;
-            left: 78%;
-            animation-delay: 0.6s;
-            color: #60a5fa;
-            font-size: 2rem;
-        }
-        .contact .floating-icons-container .floating-icon:nth-child(8) {
-            top: 78%;
-            left: 72%;
-            animation-delay: 3s;
-            color: #a78bfa;
-            font-size: 2.8rem;
-        }
-
-        .contact .section-header {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            margin-bottom: 50px;
-        }
-        .contact .section-header h2 {
-            font-size: 2.4rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 8px;
-        }
-        .contact .section-header .subtitle {
-            color: #8888aa;
-            font-size: 1rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .contact-grid {
-            position: relative;
-            z-index: 2;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 28px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .contact-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 35px 25px 30px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .contact-card:hover {
-            border-color: rgba(124, 58, 237, 0.5);
-            transform: translateY(-8px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(124, 58, 237, 0.15);
-        }
-
-        .contact-card .contact-icon {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(26, 86, 219, 0.2), rgba(124, 58, 237, 0.2));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 18px;
+        .community-card h3 {
             font-size: 1.8rem;
-            color: var(--dim-yellow);
-            transition: all 0.4s ease;
-            border: 1px solid rgba(124, 58, 237, 0.2);
+            margin: 20px 0 10px;
+            color: var(--primary);
         }
-        .contact-card:hover .contact-icon {
-            background: linear-gradient(135deg, var(--blue), var(--purple));
-            color: #fff;
-            box-shadow: 0 0 30px rgba(124, 58, 237, 0.4);
+        .community-card p {
+            padding: 0 20px 20px;
+            color: var(--gray);
+        }
+        .community-btn {
+            background: var(--red);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .community-btn:hover {
+            background: #a01328;
             transform: scale(1.05);
         }
 
-        .contact-card h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 6px;
+        /* Administration Section */
+        .administration-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
         }
 
-        .contact-card .contact-detail {
-            font-size: 0.95rem;
-            color: #b8b8d0;
-            line-height: 1.6;
-            word-break: break-word;
-        }
-        .contact-card .contact-detail a {
-            color: var(--dim-yellow);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        .contact-card .contact-detail a:hover {
-            color: #fff;
-            text-decoration: underline;
-        }
-
-        .contact-card .contact-action {
-            display: inline-block;
-            margin-top: 16px;
-            padding: 8px 22px;
-            border-radius: 25px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #fff;
-            background: linear-gradient(135deg, var(--blue), var(--purple));
-            text-decoration: none;
-            transition: all 0.35s ease;
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
-        }
-        .contact-card .contact-action:hover {
-            box-shadow: 0 8px 28px rgba(124, 58, 237, 0.6);
-            transform: translateY(-2px);
-        }
-
-        /* ===== PRE-FOOTER SLIDER ===== */
-        .pre-footer-slider {
-            position: relative;
-            z-index: 1;
-            padding: 70px 0;
-            background: rgba(10, 10, 20, 0.9);
-            overflow: hidden;
-        }
-        .pre-footer-slider h2 {
-            text-align: center;
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #fff;
-        }
-        .pre-footer-slider .subtitle {
-            text-align: center;
-            color: #8888aa;
-            margin-bottom: 35px;
-            font-size: 1rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        .slider-track-wrapper {
-            overflow: hidden;
-            width: 100%;
-            position: relative;
-        }
-        .slider-track {
-            display: flex;
-            gap: 20px;
-            animation: slideScroll 30s linear infinite;
-            width: max-content;
-        }
-        .slider-track:hover {
-            animation-play-state: paused;
-        }
-        @keyframes slideScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        .slider-card {
-            flex: 0 0 auto;
-            width: 260px;
-            height: 200px;
-            border-radius: 16px;
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 8px;
-            transition: all 0.4s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            background-size: cover;
-            background-position: center;
-        }
-        .slider-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 16px;
-            background: linear-gradient(to top, rgba(10, 10, 20, 0.85) 0%, transparent 60%);
-            z-index: 1;
-            transition: opacity 0.4s ease;
-        }
-        .slider-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 16px;
-            background: linear-gradient(135deg, rgba(26, 86, 219, 0.15), rgba(124, 58, 237, 0.15));
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            z-index: 1;
-        }
-        .slider-card:hover::after { opacity: 1; }
-        .slider-card:hover {
-            border-color: rgba(201, 168, 76, 0.5);
-            transform: translateY(-6px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-        }
-        .slider-card .slider-label {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #fff;
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            padding: 0 15px 20px;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-            width: 100%;
-        }
-        .slider-card:nth-child(1) { background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), radial-gradient(ellipse at 30% 30%, #1a56db, #0a0a1a); }
-        .slider-card:nth-child(2) { background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), radial-gradient(ellipse at 60% 40%, #7c3aed, #0a0a1a); }
-        .slider-card:nth-child(3) { background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), radial-gradient(ellipse at 40% 50%, #c9a84c, #0a0a1a); }
-        .slider-card:nth-child(4) { background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), radial-gradient(ellipse at 70% 30%, #60a5fa, #0a0a1a); }
-        .slider-card:nth-child(5) { background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), radial-gradient(ellipse at 30% 60%, #a78bfa, #0a0a1a); }
-        .slider-card:nth-child(6) { background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), radial-gradient(ellipse at 50% 40%, #22d3ee, #0a0a1a); }
-        .slider-card:nth-child(7) { background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), radial-gradient(ellipse at 60% 60%, #f472b6, #0a0a1a); }
-        .slider-card:nth-child(8) { background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), radial-gradient(ellipse at 40% 30%, #34d399, #0a0a1a); }
-        .slider-card:nth-child(9) { background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), radial-gradient(ellipse at 30% 30%, #1a56db, #0a0a1a); }
-        .slider-card:nth-child(10) { background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), radial-gradient(ellipse at 60% 40%, #7c3aed, #0a0a1a); }
-        .slider-card:nth-child(11) { background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), radial-gradient(ellipse at 40% 50%, #c9a84c, #0a0a1a); }
-        .slider-card:nth-child(12) { background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), radial-gradient(ellipse at 70% 30%, #60a5fa, #0a0a1a); }
-        .slider-card:nth-child(13) { background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), radial-gradient(ellipse at 30% 60%, #a78bfa, #0a0a1a); }
-        .slider-card:nth-child(14) { background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), radial-gradient(ellipse at 50% 40%, #22d3ee, #0a0a1a); }
-        .slider-card:nth-child(15) { background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), radial-gradient(ellipse at 60% 60%, #f472b6, #0a0a1a); }
-        .slider-card:nth-child(16) { background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), radial-gradient(ellipse at 40% 30%, #34d399, #0a0a1a); }
-
-        /* ===== FOOTER ===== */
-        footer {
-            position: relative;
-            z-index: 1;
-            background: linear-gradient(135deg, #0a0a1a, #1a1a2e);
-            color: white;
-            padding: 80px 0 30px;
-            border-top: 1px solid rgba(124, 58, 237, 0.3);
-        }
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 25px;
-        }
-        .footer-content {
+        .admin-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 50px;
-            margin-bottom: 50px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
         }
-        .footer-section h3 {
-            color: var(--dim-yellow);
-            margin-bottom: 25px;
-            font-size: 1.4rem;
+
+        .admin-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            text-align: center;
         }
-        .footer-section p {
-            color: #b8b8d0;
-            line-height: 1.8;
-            margin-bottom: 10px;
+
+        .admin-card:hover {
+            transform: translateY(-10px);
         }
-        .footer-section ul {
-            list-style: none;
-            padding: 0;
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 40px 20px;
+            color: white;
         }
-        .footer-section ul li {
-            margin-bottom: 12px;
-        }
-        .footer-section ul li a {
-            color: #b8b8d0;
-            text-decoration: none;
-            transition: color 0.3s ease;
-            font-size: 0.95rem;
-        }
-        .footer-section ul li a:hover {
-            color: var(--dim-yellow);
-        }
-        .social-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-        }
-        .social-icon {
-            width: 45px;
-            height: 45px;
-            background: rgba(255, 255, 255, 0.08);
+
+        .admin-avatar {
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
+            margin: 0 auto 20px;
+            border: 5px solid white;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            font-size: 1.2rem;
-        }
-        .social-icon:hover {
-            background: var(--dim-yellow);
-            transform: translateY(-5px);
-            color: var(--black);
-        }
-        .footer-bottom {
-            text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            color: #666680;
-            font-size: 0.85rem;
-        }
-        .footer-bottom a {
-            color: var(--dim-yellow);
-            text-decoration: none;
-        }
-        .footer-bottom a:hover {
-            text-decoration: underline;
+            font-size: 2.5rem;
+            color: white;
+            font-weight: bold;
         }
 
-        /* ===== WHATSAPP FLOAT ===== */
+        .admin-info {
+            padding: 30px;
+        }
+
+        .admin-info h3 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .admin-title {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .admin-contact {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .admin-contact p {
+            margin: 8px 0;
+            color: var(--gray);
+        }
+
+        .admin-contact i {
+            color: var(--primary);
+            margin-right: 10px;
+        }
+
+        /* WhatsApp Float */
         .whatsapp-float {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            z-index: 9999;
+            z-index: 1000;
         }
+
         .whatsapp-container {
             position: relative;
         }
+
         .whatsapp-button {
             width: 70px;
             height: 70px;
@@ -1258,842 +691,404 @@
             align-items: center;
             justify-content: center;
             font-size: 2.5rem;
-            color: #fff;
+            color: white;
             box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
             cursor: pointer;
             transition: all 0.3s ease;
-            text-decoration: none;
-            animation: whatsappBounce 2s ease-in-out infinite;
         }
+
         .whatsapp-button:hover {
             transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 12px 40px rgba(37, 211, 102, 0.6);
         }
-        @keyframes whatsappBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
+
         .whatsapp-info {
             position: absolute;
             bottom: 80px;
             right: 0;
-            background: #1a1a2e;
+            background: white;
             padding: 20px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             width: 280px;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(20px) scale(0.95);
-            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateY(20px);
+            transition: all 0.3s ease;
             border-left: 5px solid #25D366;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
+
         .whatsapp-container:hover .whatsapp-info {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0) scale(1);
+            transform: translateY(0);
         }
-        .whatsapp-info .admin-avatar-small {
-            width: 55px;
-            height: 55px;
+
+        .admin-avatar-small {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--blue), var(--purple));
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
-            font-size: 1.6rem;
+            color: white;
+            font-size: 1.8rem;
             font-weight: 600;
-            margin-bottom: 12px;
-            border: 3px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            margin-bottom: 15px;
+            border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        .whatsapp-info h4 {
-            color: #fff;
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-        }
-        .whatsapp-info p {
-            color: #b8b8d0;
-            font-size: 0.85rem;
-            margin-bottom: 12px;
-            line-height: 1.5;
-        }
+
         .whatsapp-number {
             display: inline-block;
             background: #25D366;
-            color: #fff;
+            color: white;
             padding: 10px 20px;
             border-radius: 25px;
             font-weight: 600;
             text-decoration: none;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }
-        .whatsapp-number:hover {
-            background: #1ebd5c;
-            transform: scale(1.03);
         }
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 968px) {
-            .pinterest-container {
-                flex-direction: column;
-                text-align: center;
-            }
-            .pinterest-text {
-                max-width: 100%;
-            }
-            .pinterest-motion-grid {
-                width: 100%;
-                height: 400px;
-            }
-            .hamburger { display: flex; }
-            .nav-links {
+        /* CTA Slider */
+        .cta-slider {
+            background: linear-gradient(135deg, var(--primary) 0%, #2a7a9a 100%);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+        .cta-button {
+            background: var(--red);
+            color: white;
+            border: none;
+            padding: 18px 45px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        .cta-button:hover {
+            background: #a01328;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #111, #000);   /* black tone */
+            color: white;
+            padding: 80px 0 30px;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 50px;
+            margin-bottom: 50px;
+        }
+        .footer-section h3 {
+            color: var(--accent);   /* light gold */
+            margin-bottom: 25px;
+        }
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .social-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s;
+        }
+        .social-icon:hover {
+            background: var(--secondary);
+            transform: translateY(-5px);
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        @media (max-width: 768px) {
+            .mobile-menu-btn { display: block; }
+            nav ul {
                 position: fixed;
-                top: 0;
-                right: -100%;
-                width: 280px;
-                height: 100vh;
-                background: rgba(10, 10, 20, 0.98);
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: white;
                 flex-direction: column;
-                padding: 100px 30px 30px;
-                gap: 5px;
-                transition: right 0.4s ease;
-                border-left: 1px solid rgba(124, 58, 237, 0.3);
-                box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
+                padding: 20px;
+                clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+                transition: all 0.4s;
             }
-            .nav-links.active { right: 0; }
-            .nav-links a {
-                display: block;
-                padding: 14px 20px;
-                border-radius: 12px;
-                font-size: 1rem;
-            }
-            .contact-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-            .products-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-            .about-content { padding: 30px 20px; }
-            .floating-icon { font-size: 1.8rem !important; }
-            .hero-slide-content h1 { font-size: 1.8rem; }
-            .slider-card { width: 200px; height: 160px; }
-            .services-slider { height: 300px; }
-            .services-slide-item .slide-content h3 { font-size: 1.8rem; }
-            .footer-content { gap: 30px; }
-        }
-
-        @media (max-width: 480px) {
-            .pinterest-motion-grid {
-                grid-template-columns: repeat(2, 1fr);
-                height: 350px;
-            }
-            .pinterest-column:nth-child(3) {
-                display: none; /* Hide third column on compact screens */
-            }
-            .nav-container { padding: 0 15px; height: 58px; }
-            .nav-logo { font-size: 1rem; }
-            .nav-logo .logo-icon { width: 34px; height: 34px; font-size: 1rem; border-radius: 8px; }
-            .hero-slide-content h1 { font-size: 1.5rem; }
-            .hero-slide-content p { font-size: 0.9rem; }
-            .btn { padding: 10px 22px; font-size: 0.85rem; }
-            .about-content h2 { font-size: 1.6rem; }
-            .products h2, .contact .section-header h2, .services-slider-section h2 { font-size: 1.6rem; }
-            .products-grid { grid-template-columns: 1fr; }
-            .contact-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
-            .whatsapp-float { bottom: 20px; right: 20px; }
-            .whatsapp-button { width: 55px; height: 55px; font-size: 2rem; }
-            .slider-card { width: 160px; height: 140px; }
-            .pre-footer-slider h2 { font-size: 1.4rem; }
-            .about-stats { gap: 15px; }
-            .stat-item .stat-num { font-size: 1.8rem; }
-            .services-slider { height: 250px; }
-            .services-slide-item .slide-content h3 { font-size: 1.4rem; }
-            .services-slide-item .slide-content p { font-size: 1rem; }
-            .whatsapp-info { width: 240px; right: -10px; }
-            .contact-card { padding: 22px 14px 20px; }
-            .contact-card .contact-icon { width: 56px; height: 56px; font-size: 1.4rem; }
-            .contact-card h3 { font-size: 1rem; }
-            .contact-card .contact-detail { font-size: 0.8rem; }
-            .contact-card .contact-action { font-size: 0.75rem; padding: 6px 16px; }
-        }
-
-        @media (max-width: 400px) {
-            .contact-grid { grid-template-columns: 1fr; }
+            nav ul.active { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+            .moving-words-bar { margin-top: 180px; }
+            .welcome-content h1 { font-size: 2.8rem; }
+            .notice-board-container { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-
-    <!-- ===== LASER BEAM CANVAS ===== -->
-    <canvas id="laserCanvas"></canvas>
-
-    <!-- ===== NAVBAR ===== -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="#home" class="nav-logo">
-                <div class="logo-icon"><i class="fas fa-atom"></i></div>
-                <span>Quantum Minds Technology</span>
-            </a>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#home" class="active" data-section="home">Home</a></li>
-                <li><a href="#about" data-section="about">About</a></li>
-                <li><a href="#products" data-section="products">Products &amp; Services</a></li>
-                <li><a href="#services-slider" data-section="services-slider">Our Work</a></li>
-                <li><a href="#contact" data-section="contact">Contact Us</a></li>
-            </ul>
-            <div class="hamburger" id="hamburger">
-                <span></span><span></span><span></span>
+    <header>
+        <div class="container header-container">
+            <div class="logo-container">
+                <div class="logo-circle">
+                </div>
+                <div class="logo-text">
+                    <h1>Vine Bible Ministries</h1>
+                    <p>Church & Community School | Lusaka, Zambia</p>
+                </div>
             </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+            <nav>
+                <ul id="navMenu">
+                    <li><a href="#home" class="active">Home</a></li>
+                    <li><a href="#programs">Programs</a></li>
+                    <li><a href="#community">Community</a></li>
+                    <li><a href="#notice">Notice Board</a></li>
+                    <li><a href="#leadership">Leadership</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <!-- ===== HERO SLIDER ===== -->
-    <section id="home" class="hero-slider">
-        <div class="hero-slides-wrapper">
-            <div class="hero-slide-item active" data-slide="0">
-                <div class="hero-slide-content">
-                    <div class="hero-badge">⚡ Manufacturing Excellence</div>
-                    <h1>Quantum Minds Technologies</h1>
-                    <p>Innovating the future with precision-engineered electrical products, powerful audio amplifiers, expert panel beating, spray painting, and cutting-edge electronics lab solutions.</p>
-                    <div class="hero-btns">
-                        <a href="#products" class="btn btn-primary"><i class="fas fa-cogs"></i> Our Products</a>
-                        <a href="#contact" class="btn btn-outline"><i class="fas fa-envelope"></i> Get In Touch</a>
-                    </div>
-                </div>
-            </div>
-            <div class="hero-slide-item" data-slide="1">
-                <div class="hero-slide-content">
-                    <div class="hero-badge">🔊 Audio Engineering</div>
-                    <h1>Power Audio Amplifiers</h1>
-                    <p>Custom-built high-power audio amplifiers delivering crystal-clear sound with robust performance for concert-grade systems and professional studios.</p>
-                    <div class="hero-btns">
-                        <a href="#products" class="btn btn-primary"><i class="fas fa-volume-up"></i> Explore</a>
-                        <a href="#contact" class="btn btn-outline"><i class="fas fa-envelope"></i> Inquire</a>
-                    </div>
-                </div>
-            </div>
-            <div class="hero-slide-item" data-slide="2">
-                <div class="hero-slide-content">
-                    <div class="hero-badge">🔧 Precision Craftsmanship</div>
-                    <h1>Panel Beating &amp; Spray Painting</h1>
-                    <p>Expert automotive body repair and refinishing services. Our skilled technicians restore vehicles to factory-finish quality with advanced techniques.</p>
-                    <div class="hero-btns">
-                        <a href="#products" class="btn btn-primary"><i class="fas fa-car"></i> Learn More</a>
-                        <a href="#contact" class="btn btn-outline"><i class="fas fa-envelope"></i> Contact</a>
-                    </div>
-                </div>
-            </div>
-            <div class="hero-slide-item" data-slide="3">
-                <div class="hero-slide-content">
-                    <div class="hero-badge">🧪 Electronics Lab Solutions</div>
-                    <h1>Lab Design &amp; Development</h1>
-                    <p>End-to-end design and development of electronics laboratories for universities, colleges, and research institutions — from layout to equipment.</p>
-                    <div class="hero-btns">
-                        <a href="#products" class="btn btn-primary"><i class="fas fa-flask"></i> Our Services</a>
-                        <a href="#contact" class="btn btn-outline"><i class="fas fa-envelope"></i> Get In Touch</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="slide-indicators">
-            <span class="active" data-index="0"></span>
-            <span data-index="1"></span>
-            <span data-index="2"></span>
-            <span data-index="3"></span>
-        </div>
-    </section>
-
-    <!-- ===== ABOUT ===== -->
-    <section id="about" class="about">
-        <div class="floating-icons-container">
-            <div class="floating-icon"><i class="fas fa-bolt"></i></div>
-            <div class="floating-icon"><i class="fas fa-cogs"></i></div>
-            <div class="floating-icon"><i class="fas fa-volume-up"></i></div>
-            <div class="floating-icon"><i class="fas fa-car"></i></div>
-            <div class="floating-icon"><i class="fas fa-microchip"></i></div>
-            <div class="floating-icon"><i class="fas fa-flask"></i></div>
-            <div class="floating-icon"><i class="fas fa-plug"></i></div>
-            <div class="floating-icon"><i class="fas fa-tools"></i></div>
-        </div>
-        <div class="about-content">
-            <h2>About <span class="highlight">Quantum Minds</span> Technologies</h2>
-            <p>We are a premier Zambian manufacturing company dedicated to delivering top-tier electrical and electro-mechanical products. From high-performance power audio amplifiers to expert car panel beating and spray painting, we blend craftsmanship with innovation. As a trusted supplier of electrical and electronics parts, and specialists in electronics lab design and development, we empower industries, educational institutions, and individuals with solutions that drive progress.</p>
-            <p>Our commitment to quality, precision, and customer satisfaction sets us apart. Every project is handled with meticulous attention to detail, ensuring reliability and excellence.</p>
-            <div class="about-stats">
-                <div class="stat-item">
-                    <div class="stat-num">10+</div>
-                    <div class="stat-label">Years Experience</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-num">500+</div>
-                    <div class="stat-label">Projects Completed</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-num">100%</div>
-                    <div class="stat-label">Client Satisfaction</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-num">24/7</div>
-                    <div class="stat-label">Support</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== PRODUCTS & SERVICES ===== -->
-    <section id="products" class="products">
-        <h2>Products &amp; Services</h2>
-        <p class="subtitle">What We Offer</p>
-        <div class="products-grid">
-            <div class="product-card">
-                <div class="card-image" style="background: linear-gradient(135deg, #1a56db, #0d3b8c), radial-gradient(ellipse at 30% 40%, rgba(255,255,255,0.15) 0%, transparent 60%);"></div>
-                <div class="card-body">
-                    <h3>Electrical Products</h3>
-                    <p>High-quality electrical components, wiring systems, switchgear, distribution boards, and custom electrical solutions for residential, commercial, and industrial applications.</p>
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="card-image" style="background: linear-gradient(135deg, #7c3aed, #4c1d95), radial-gradient(ellipse at 60% 40%, rgba(255,255,255,0.15) 0%, transparent 60%);"></div>
-                <div class="card-body">
-                    <h3>Electro-Mechanical Products</h3>
-                    <p>Precision-engineered electro-mechanical devices including motors, actuators, control systems, and hybrid mechanical-electrical assemblies built to exact specifications.</p>
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="card-image" style="background: linear-gradient(135deg, #c9a84c, #a88a30), radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.15) 0%, transparent 60%);"></div>
-                <div class="card-body">
-                    <h3>Power Audio Amplifiers</h3>
-                    <p>Custom-built high-power audio amplifiers delivering crystal-clear sound with robust performance. From concert-grade systems to professional studio amplifiers, we design for power and clarity.</p>
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="card-image" style="background: linear-gradient(135deg, #60a5fa, #1a56db), radial-gradient(ellipse at 40% 60%, rgba(255,255,255,0.15) 0%, transparent 60%);"></div>
-                <div class="card-body">
-                    <h3>Car Panel Beating &amp; Spray Painting</h3>
-                    <p>Expert automotive body repair and refinishing services. Our skilled technicians restore vehicles to factory-finish quality using advanced panel beating techniques and premium spray painting.</p>
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="card-image" style="background: linear-gradient(135deg, #a78bfa, #7c3aed), radial-gradient(ellipse at 30% 70%, rgba(255,255,255,0.15) 0%, transparent 60%);"></div>
-                <div class="card-body">
-                    <h3>Electrical &amp; Electronics Parts Supply</h3>
-                    <p>Comprehensive supply chain for electrical and electronics components — resistors, capacitors, semiconductors, connectors, PCBs, and specialized parts sourced from trusted global manufacturers.</p>
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="card-image" style="background: linear-gradient(135deg, #22d3ee, #0891b2), radial-gradient(ellipse at 60% 30%, rgba(255,255,255,0.15) 0%, transparent 60%);"></div>
-                <div class="card-body">
-                    <h3>Electronics Lab Design &amp; Development</h3>
-                    <p>End-to-end design and development of electronics laboratories for universities, colleges, and research institutions. From layout planning to equipment procurement and installation.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== NEW: PINTEREST SPLIT-MOTION SHOWCASE ===== -->
-    <section class="pinterest-showcase">
-        <div class="pinterest-container">
-            <div class="pinterest-text">
-                <h2>Step into the Future of Engineering</h2>
-                <p>Flex your innovation and score fresh inspiration for every infrastructure project.</p>
-                <a href="#contact" class="btn btn-primary"><i class="fas fa-lightbulb"></i> Start Your Project</a>
-            </div>
-            <div class="pinterest-motion-grid">
-                <!-- Column 1 Loops Up -->
-                <div class="pinterest-column column-up">
-                    <div class="pin-item" style="background: linear-gradient(135deg, #1a56db, #0d3b8c); height: 180px;">
-                        <i class="fas fa-volume-up"></i><h4>High-Power Amps</h4>
-                    </div>
-                    <div class="pin-item" style="background: linear-gradient(135deg, #7c3aed, #4c1d95); height: 240px;">
-                        <i class="fas fa-flask"></i><h4>Lab Systems</h4>
-                    </div>
-                    <div class="pin-item" style="background: linear-gradient(135deg, #c9a84c, #a88a30); height: 160px;">
-                        <i class="fas fa-bolt"></i><h4>Distribution</h4>
-                    </div>
-                    <!-- Cloned items for infinite loop seamlessness -->
-                    <div class="pin-item" style="background: linear-gradient(135deg, #1a56db, #0d3b8c); height: 180px;">
-                        <i class="fas fa-volume-up"></i><h4>High-Power Amps</h4>
-                    </div>
-                    <div class="pin-item" style="background: linear-gradient(135deg, #7c3aed, #4c1d95); height: 240px;">
-                        <i class="fas fa-flask"></i><h4>Lab Systems</h4>
-                    </div>
-                    <div class="pin-item" style="background: linear-gradient(135deg, #c9a84c, #a88a30); height: 160px;">
-                        <i class="fas fa-bolt"></i><h4>Distribution</h4>
-                    </div>
-                </div>
-                <!-- Column 2 Loops Down -->
-                <div class="pinterest-column column-down">
-                    <div class="pin-item" style="background: linear-gradient(135deg, #60a5fa, #1a56db); height: 220px;">
-                        <i class="fas fa-car"></i><h4>Premium Refinish</h4>
-                    </div>
-                    <div class="pin-item" style="background: linear-gradient(135deg, #a78bfa, #7c3aed); height: 170px;">
-                        <i class="fas fa-microchip"></i><h4>PCB Components</h4>
-                    </div>
-                    <div class="pin-item" style="background: linear-gradient(135deg, #22d3ee, #0891b2); height: 210px;">
-                        <i class="fas fa-cogs"></i><h4>Actuators</h4>
-                    </div>
-                    <!-- Cloned items for infinite loop seamlessness -->
-                    <div class="pin-item" style="background: linear-gradient(135deg, #60a5fa, #1a56db); height: 220px;">
-                        <i class="fas fa-car"></i><h4>Premium Refinish</h4>
-                    </div>
-                    <div class="pin-item" style="background: linear-gradient(135deg, #a78bfa, #7c3aed); height: 170px;">
-                        <i class="fas fa-microchip"></i><h4>PCB Components</h4>
-                    </div>
-                    <div class="pin-item" style="background: linear-gradient(135deg, #22d3ee, #0891b2); height: 210px;">
-                        <i class="fas fa-cogs"></i><h4>Actuators</h4>
-                    </div>
-                </div>
-                <!-- Column 3 Loops Up -->
-                <div class="pinterest-column column-up">
-                    <div class="pin-item" style="background: linear-gradient(135deg, #f472b6, #7c3aed); height: 160px;">
-                        <i class="fas fa-plug"></i><h4>Custom Framework</h4>
-                    </div>
-                    <div class="pin-item" style="background: linear-gradient(135deg, #34d399, #0d3b8c); height: 230px;">
-                        <i class="fas fa-tools"></i><h4>Body Panels</h4>
-                    </div>
-                    <div class="pin-item" style="background: linear-gradient(135deg, #c9a84c, #111122); height: 190px;">
-                        <i class="fas fa-atom"></i><h4>Zambian Engineering</h4>
-                    </div>
-                    <!-- Cloned items for infinite loop seamlessness -->
-                    <div class="pin-item" style="background: linear-gradient(135deg, #f472b6, #7c3aed); height: 160px;">
-                        <i class="fas fa-plug"></i><h4>Custom Framework</h4>
-                    </div>
-                    <div class="pin-item" style="background: linear-gradient(135deg, #34d399, #0d3b8c); height: 230px;">
-                        <i class="fas fa-tools"></i><h4>Body Panels</h4>
-                    </div>
-                    <div class="pin-item" style="background: linear-gradient(135deg, #c9a84c, #111122); height: 190px;">
-                        <i class="fas fa-atom"></i><h4>Zambian Engineering</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== SERVICES SLIDER ===== -->
-    <section id="services-slider" class="services-slider-section">
-        <div class="container" style="max-width:1200px;margin:0 auto;padding:0 25px;">
-            <h2>Our Work in Action</h2>
-            <p class="subtitle">Transforming ideas into reality</p>
-            <div class="services-slider">
-                <div class="services-slide-item active">
-                    <div class="slide-overlay"></div>
-                    <div class="slide-content">
-                        <h3>⚡ Electrical Installations</h3>
-                        <p>From complex industrial switchgear to residential wiring, we deliver safe, reliable, and code-compliant electrical solutions.</p>
-                    </div>
-                </div>
-                <div class="services-slide-item">
-                    <div class="slide-overlay"></div>
-                    <div class="slide-content">
-                        <h3>🔊 Premium Audio Systems</h3>
-                        <p>High-power amplifiers and professional audio solutions designed for concert-grade performance and studio-quality sound.</p>
-                    </div>
-                </div>
-                <div class="services-slide-item">
-                    <div class="slide-overlay"></div>
-                    <div class="slide-content">
-                        <h3>🔧 Precision Fabrication</h3>
-                        <p>Expert panel beating, spray painting, and custom fabrication that restores and enhances vehicles to factory-finish standards.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== CONTACT ===== -->
-    <section id="contact" class="contact">
-        <div class="floating-icons-container">
-            <div class="floating-icon"><i class="fas fa-map-pin"></i></div>
-            <div class="floating-icon"><i class="fas fa-phone-alt"></i></div>
-            <div class="floating-icon"><i class="fas fa-envelope"></i></div>
-            <div class="floating-icon"><i class="fas fa-clock"></i></div>
-            <div class="floating-icon"><i class="fab fa-whatsapp"></i></div>
-            <div class="floating-icon"><i class="fas fa-globe-africa"></i></div>
-            <div class="floating-icon"><i class="fas fa-headset"></i></div>
-            <div class="floating-icon"><i class="fas fa-handshake"></i></div>
-        </div>
-
-        <div class="section-header">
-            <h2>Contact Us</h2>
-            <p class="subtitle">Get in touch — we'd love to hear from you</p>
-        </div>
-
-        <div class="contact-grid">
-            <div class="contact-card">
-                <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
-                <h3>Visit Us</h3>
-                <div class="contact-detail">
-                    Plot 20266 off Kafue Road<br />
-                    Light Industrial Area, Lusaka, Zambia
-                </div>
-                <a href="https://maps.google.com" target="_blank" class="contact-action">Find on Map</a>
-            </div>
-
-            <div class="contact-card">
-                <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
-                <h3>Call Us</h3>
-                <div class="contact-detail">
-                    <a href="tel:+260964068291">+260 964 068 291</a>
-                </div>
-                <a href="tel:+260964068291" class="contact-action"><i class="fas fa-phone"></i> Call Now</a>
-            </div>
-
-            <div class="contact-card">
-                <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                <h3>Email Us</h3>
-                <div class="contact-detail">
-                    <a href="mailto:info@quantumminds.co.zm">info@quantumminds.co.zm</a>
-                </div>
-                <a href="mailto:info@quantumminds.co.zm" class="contact-action"><i class="fas fa-paper-plane"></i> Send Email</a>
-            </div>
-
-            <div class="contact-card">
-                <div class="contact-icon"><i class="fas fa-clock"></i></div>
-                <h3>Service Hours</h3>
-                <div class="contact-detail">
-                    Mon – Fri: 8:00 AM – 5:00 PM<br />
-                    Saturday: By Appointment
-                </div>
-                <span class="contact-action" style="cursor:default;background:rgba(255,255,255,0.06);box-shadow:none;">Closed Sunday</span>
-            </div>
-
-            <div class="contact-card">
-                <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
-                <h3>WhatsApp</h3>
-                <div class="contact-detail">
-                    <a href="https://wa.me/260964068291" target="_blank">+260 964 068 291</a>
-                </div>
-                <a href="https://wa.me/260964068291?text=Hello%20Quantum%20Minds%20Technologies%2C%20I%20would%20like%20to%20inquire%20about%20your%20services." target="_blank" class="contact-action"><i class="fab fa-whatsapp"></i> Chat Now</a>
-            </div>
-
-            <div class="contact-card">
-                <div class="contact-icon"><i class="fas fa-headset"></i></div>
-                <h3>24/7 Support</h3>
-                <div class="contact-detail">
-                    Emergency technical support<br />
-                    available around the clock.
-                </div>
-                <a href="tel:+260964068291" class="contact-action"><i class="fas fa-bolt"></i> Emergency</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== PRE-FOOTER SLIDER ===== -->
-    <section class="pre-footer-slider">
-        <h2>🔧 Our Work &amp; Projects</h2>
-        <p class="subtitle">Excellence in every detail</p>
-        <div class="slider-track-wrapper">
-            <div class="slider-track" id="sliderTrack">
-                <div class="slider-card"><div class="slider-label">Electrical Installations</div></div>
-                <div class="slider-card"><div class="slider-label">Mechanical Assemblies</div></div>
-                <div class="slider-card"><div class="slider-label">Amplifier Systems</div></div>
-                <div class="slider-card"><div class="slider-label">Auto Body Repair</div></div>
-                <div class="slider-card"><div class="slider-label">LED Lighting Solutions</div></div>
-                <div class="slider-card"><div class="slider-label">Lab Development</div></div>
-                <div class="slider-card"><div class="slider-label">Parts Fabrication</div></div>
-                <div class="slider-card"><div class="slider-label">Custom Spray Painting</div></div>
-                <div class="slider-card"><div class="slider-label">Electrical Installations</div></div>
-                <div class="slider-card"><div class="slider-label">Mechanical Assemblies</div></div>
-                <div class="slider-card"><div class="slider-label">Amplifier Systems</div></div>
-                <div class="slider-card"><div class="slider-label">Auto Body Repair</div></div>
-                <div class="slider-card"><div class="slider-label">LED Lighting Solutions</div></div>
-                <div class="slider-card"><div class="slider-label">Lab Development</div></div>
-                <div class="slider-card"><div class="slider-label">Parts Fabrication</div></div>
-                <div class="slider-card"><div class="slider-label">Custom Spray Painting</div></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== FOOTER ===== -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Quantum Minds Technologies</h3>
-                    <p>Plot 20266 off Kafue Road<br />Light Industrial Area, Lusaka, Zambia</p>
-                    <p>Email: info@quantumminds.co.zm<br />Phone: +260 964 068 291</p>
-                    <div class="social-links">
-                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#products">Products &amp; Services</a></li>
-                        <li><a href="#services-slider">Our Work</a></li>
-                        <li><a href="#contact">Contact Us</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Service Hours</h3>
-                    <p>Monday – Friday: 8:00 AM – 5:00 PM</p>
-                    <p>Saturday: By Appointment</p>
-                    <p>Sunday: Closed</p>
-                    <p style="margin-top:15px;color:var(--dim-yellow);"><i class="fas fa-phone"></i> +260 964 068 291</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                &copy; <span id="year"></span> Quantum Minds Technologies. All rights reserved. | Designed with 💜 in Zambia
-            </div>
-        </div>
-    </footer>
-
-    <!-- ===== WHATSAPP FLOAT ===== -->
-    <div class="whatsapp-float">
-        <div class="whatsapp-container">
-            <a href="https://wa.me/260964068291?text=Hello%20Quantum%20Minds%20Technologies%2C%20I%20would%20like%20to%20inquire%20about%20your%20services."
-               class="whatsapp-button" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
-                <i class="fab fa-whatsapp"></i>
-            </a>
-            <div class="whatsapp-info">
-                <div class="admin-avatar-small"><i class="fas fa-user-tie"></i></div>
-                <h4>A. Chanda</h4>
-                <p>Sales &amp; Support<br />Available Mon-Fri 8am-5pm</p>
-                <a href="https://wa.me/260964068291?text=Hello%20Quantum%20Minds%20Technologies%2C%20I%20would%20like%20to%20inquire%20about%20your%20services."
-                   target="_blank" class="whatsapp-number"><i class="fab fa-whatsapp"></i> +260 964 068 291</a>
-            </div>
+    <!-- Moving Words -->
+    <div class="moving-words-bar">
+        <div class="moving-words-container">
+            <div class="moving-word"><i class="fas fa-church"></i> Sunday Service 09:30hrs</div>
+            <div class="moving-word"><i class="fas fa-pray"></i> Wednesday Prayer & Fasting 15:00hrs</div>
+            <div class="moving-word"><i class="fas fa-map-marker-alt"></i> Plot 20266 off Kafue Road, Light Industrial Area, Lusaka</div>
+            <div class="moving-word"><i class="fas fa-hands-helping"></i> Sponsor a Child</div>
+            <div class="moving-word"><i class="fas fa-chalkboard-teacher"></i> Pre-Grade to Grade 7</div>
+            <div class="moving-word"><i class="fas fa-bible"></i> Rev. Kanyenge +260 977 212 555 / +260 773844766</div>
+            <!-- duplicate -->
+            <div class="moving-word"><i class="fas fa-church"></i> Sunday Service 09:30hrs</div>
+            <div class="moving-word"><i class="fas fa-pray"></i> Wednesday Prayer & Fasting 15:00hrs</div>
         </div>
     </div>
 
-    <!-- ===== SCRIPTS ===== -->
+    <!-- Welcome Banner -->
+    <section class="welcome-banner" id="home">
+        <div class="welcome-slideshow">
+            <div class="welcome-slide slide1 active"></div>
+            <div class="welcome-slide slide2"></div>
+            <div class="welcome-slide slide3"></div>
+            <div class="welcome-slide slide4"></div>
+        </div>
+        <div class="container">
+            <div class="welcome-content">
+                <div class="welcome-badge"><i class="fas fa-star"></i> VINE BIBLE MINISTRIES</div>
+                <h1>Growing in Faith, Serving the Community</h1>
+                <p><i class="fas fa-clock"></i> Sunday 09:30 | Wednesday 15:00<br><i class="fas fa-map-pin"></i> Plot 20266 off Kafue Road, Light Industrial Area, Lusaka</p>
+                <button class="cta-button scroll-contact-btn">Join Us <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Church Programs Section (sliding card images) -->
+    <section class="container" id="programs">
+        <div class="section-title"><h2>Our Church Programs</h2><p>Join us for worship, prayer, and fellowship</p></div>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-img">
+                    <div class="img-slide" style="background-image: url('images/sunday.jpg'); opacity:1;"></div>
+                    <div class="img-slide" style="background-image: url('images/service4.jpg');"></div>
+                    <div class="img-slide" style="background-image: url('images/service6.jpg');"></div>
+                </div>
+                <div class="service-content">
+                    <h3>Sunday Service</h3>
+                    <p><i class="fas fa-clock"></i> 09:30 AM<br><i class="fas fa-map-marker-alt"></i> Main Sanctuary<br>Worship, teaching, and fellowship for all ages.</p>
+                </div>
+            </div>
+            <div class="service-card">
+                <div class="service-img">
+                    <div class="img-slide" style="background-image: url('images/praying.jpg'); opacity:1;"></div>
+                    <div class="img-slide" style="background-image: url('images/prayer.jpg');"></div>
+                    <div class="img-slide" style="background-image: url('images/prayeing.jpg');"></div>
+                </div>
+                <div class="service-content">
+                    <h3>Wednesday Prayer & Fasting</h3>
+                    <p><i class="fas fa-clock"></i> 15:00 PM<br>Midweek spiritual renewal, prayer session, and fasting.</p>
+                </div>
+            </div>
+            <div class="service-card">
+                <div class="service-img">
+                    <div class="img-slide" style="background-image: url('images/children.jpg'); opacity:1;"></div>
+                    <div class="img-slide" style="background-image: url('images/ministry.jpg');"></div>
+                </div>
+                <div class="service-content">
+                    <h3>Kids Ministry</h3>
+                    <p>Sunday school for children from Pre-grade to Grade 7, teaching biblical values.</p>
+                    
+                </div>
+            </div>
+    </section>
+
+    <!-- Vine Bible Community Cards -->
+    <section class="community-section" id="community">
+        <div class="container">
+            <div class="section-title"><h2>Vine Bible Community</h2><p>Invest in a child's future or support a classroom</p></div>
+            <div class="community-grid">
+                <div class="community-card"><div class="community-icon"><i class="fas fa-school"></i></div><h3>Pre-Grade to Grade 7</h3><p>Quality Christian-based education from early years to Grade 7. Enroll your child today.</p><button class="community-btn scroll-contact-btn">Learn More</button></div>
+                <div class="community-card"><div class="community-icon"><i class="fas fa-child"></i></div><h3>Sponsor a Child</h3><p>Provide tuition, meals, and school supplies for a vulnerable child. Change a life.</p><button class="community-btn scroll-contact-btn">Sponsor Now</button></div>
+                <div class="community-card"><div class="community-icon"><i class="fas fa-chalkboard-teacher"></i></div><h3>Teacher or Class Sponsorship</h3><p>Support a teacher's salary or adopt a whole classroom. Your donation empowers education.</p><button class="community-btn scroll-contact-btn">Support a Class</button></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Notice Board -->
+    <section class="notice-board-section" id="notice">
+        <div class="container">
+            <div class="section-title"><h2>Church & School News</h2><p>Stay updated with announcements</p></div>
+            <div class="notice-board-container">
+                <div class="announcements"><div class="announcements-header"><h3><i class="fas fa-bullhorn"></i> Latest Announcements</h3><span id="currentDate"></span></div>
+                <div class="announcements-list">
+                    <div class="announcement-item"><span class="announcement-date">20 Mar 2026</span><h4 class="announcement-title">Easter Conference 2026</h4><p>Join us for 3 days of revival from April 18-20. Guest speaker: Rev. John Banda.</p></div>
+                    <div class="announcement-item"><span class="announcement-date">15 Mar 2026</span><h4 class="announcement-title">New School Term Opens</h4><p>Term 2 begins on May 5th. Registration for new students is ongoing.</p></div>
+                    <div class="announcement-item"><span class="announcement-date">10 Mar 2026</span><h4 class="announcement-title">Sponsorship Drive</h4><p>We need 50 sponsors for children in our community school. Contact the office.</p></div>
+                </div></div>
+                <div class="quick-links"><h3><i class="fas fa-link"></i> Quick Links</h3>
+                    <a href="#" class="link-item"><i class="fas fa-donate"></i><div><strong>Give Online</strong><small>Support our ministries</small></div></a>
+                    <a href="#" class="link-item"><i class="fas fa-calendar-alt"></i><div><strong>Church Calendar</strong><small>Events & services</small></div></a>
+                    <a href="#" class="link-item"><i class="fas fa-user-friends"></i><div><strong>Volunteer</strong><small>Join a ministry team</small></div></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Slider (now with 5 sliding images) -->
+    <section class="services-slider-section">
+        <div class="container"><div class="services-slider">
+            <div class="services-slide services-slide1 active"><div class="slide-content"><h3>Empowering the Next Generation</h3><p>Our community school provides affordable, quality education from Pre-grade to Grade 7.</p></div></div>
+            <div class="services-slide services-slide2"><div class="slide-content"><h3>Sponsor a Child</h3><p>For just one child it can change a child's future through education and care.</p></div></div>
+            <div class="services-slide services-slide3"><div class="slide-content"><h3>Support a Teacher</h3><p>Help us retain dedicated teachers by sponsoring a classroom or a teacher's salary.</p></div></div>
+            <div class="services-slide services-slide4"><div class="slide-content"><h3>Building Strong Communities</h3><p>Together we can create lasting change through faith and education.</p></div></div>
+            <div class="services-slide services-slide5"><div class="slide-content"><h3>Kids' Ministry in Action</h3><p>Nurturing young hearts with love, learning, and biblical values.</p></div></div>
+        </div></div>
+    </section>
+
+    <!-- Leadership Section -->
+    <section class="administration-section" id="leadership">
+        <div class="container"><div class="section-title"><h2>Church Leadership</h2><p>Meet our pastoral team</p></div>
+        <div class="admin-grid">
+            <div class="admin-card"><div class="admin-header"><div class="admin-avatar">RK</div><h3>Rev. K.Kanyenge</h3><p>Senior Pastor</p></div>
+            <div class="admin-info"><div class="admin-title">Founder & Senior Pastor</div><p>Rev. K.Kanyenge has served the community for over 20 years, leading the church and community school with a heart for transformation.</p>
+            <div class="admin-contact"><p><i class="fas fa-phone"></i> +260 977 212 555 / 0773844766</p><p><i class="fas fa-envelope"></i> rev.keyenge@vinebible.org</p><p><i class="fab fa-whatsapp"></i> Available on WhatsApp</p></div></div></div>
+            <div class="admin-card"><div class="admin-header"><div class="admin-avatar">MK</div><h3>Mrs. Mildred Kanyenge </h3><p>School Coordinator</p></div>
+            <div class="admin-info"><div class="admin-title">Head of Community School</div><p>Oversees academic programs and child sponsorship. Passionate about holistic education.</p>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-slider"><div class="container"><h2>Be Part of Our Mission</h2><p>Sponsor a child, support a teacher, or join us for worship.</p><button class="cta-button scroll-contact-btn">Get Involved <i class="fas fa-heart"></i></button></div></section>
+
+    <!-- Footer -->
+    <footer id="contact"><div class="container">
+        <div class="footer-content">
+            <div class="footer-section"><h3>Vine Bible Ministries</h3><p>Plot 20266 off Kafue Road<br>Light Industrial Area, Lusaka, Zambia</p><p>Email: info@vinebible.org.zm<br>Phone: +260 977 212 555</p><div class="social-links"><a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a><a href="#" class="social-icon"><i class="fab fa-twitter"></i></a><a href="#" class="social-icon"><i class="fab fa-youtube"></i></a></div></div>
+            <div class="footer-section"><h3>Quick Links</h3><ul style="list-style:none"><li><a href="#home" style="color:#ddd;">Home</a></li><li><a href="#programs" style="color:#ddd;">Programs</a></li><li><a href="#community" style="color:#ddd;">Community School</a></li><li><a href="#leadership" style="color:#ddd;">Leadership</a></li></ul></div>
+            <div class="footer-section"><h3>Service Times</h3><p>Sunday: 09:30 AM<br>Wednesday: 15:00 PM (Prayer & Fasting)<br>Office Hours: Mon-Fri 8am-4pm</p></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2026 Vine Bible Ministries. All rights reserved. | Designed by Collins.M.Chanda(0975704080) email: collinsmchanda700@gmail.com [ ICU Zambia Software Engineering ] </p></div>
+    </div></footer>
+
+    <!-- WhatsApp Float -->
+    <div class="whatsapp-float"><div class="whatsapp-container"><div class="whatsapp-button"><i class="fab fa-whatsapp"></i></div><div class="whatsapp-info"><div class="admin-avatar-small">RK</div><h4>Rev. Keyenge</h4><p>Senior Pastor<br>Available Mon-Fri 8am-4pm</p><a href="https://wa.me/260977212555?text=Hello%20Rev.%20Kanyenge%2C%20I%20would%20like%20to%20know%20more%20about%20Vine%20Bible%20Ministries" target="_blank" class="whatsapp-number"><i class="fab fa-whatsapp"></i> +260 977 212 555</a></div></div></div>
+
     <script>
-        (function() {
-            // ===== LASER BEAM CANVAS =====
-            const canvas = document.getElementById('laserCanvas');
-            const ctx = canvas.getContext('2d');
-            let beams = [];
-            const beamColors = [
-                { r: 26, g: 86, b: 219, glow: 'rgba(26,86,219,' },
-                { r: 124, g: 58, b: 237, glow: 'rgba(124,58,237,' },
-                { r: 201, g: 168, b: 76, glow: 'rgba(201,168,76,' },
-                { r: 96, g: 165, b: 250, glow: 'rgba(96,165,250,' },
-                { r: 167, g: 139, b: 250, glow: 'rgba(167,139,250,' },
-            ];
-
-            function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-
-            function createBeam() {
-                const color = beamColors[Math.floor(Math.random() * beamColors.length)];
-                const direction = Math.floor(Math.random() * 4);
-                let x, y, vx, vy, length;
-                length = 80 + Math.random() * 250;
-
-                switch (direction) {
-                    case 0:
-                        x = -length; y = Math.random() * canvas.height;
-                        vx = 1.5 + Math.random() * 3; vy = 0;
-                        break;
-                    case 1:
-                        x = canvas.width + length; y = Math.random() * canvas.height;
-                        vx = -(1.5 + Math.random() * 3); vy = 0;
-                        break;
-                    case 2:
-                        x = Math.random() * canvas.width; y = -length;
-                        vx = 0; vy = 1.5 + Math.random() * 3;
-                        break;
-                    case 3:
-                        x = Math.random() * canvas.width; y = canvas.height + length;
-                        vx = 0; vy = -(1.5 + Math.random() * 3);
-                        break;
-                }
-                return { x, y, vx, vy, length, color, alpha: 0.3 + Math.random() * 0.5, thickness: 0.8 + Math.random() * 2.2, glowSize: 6 + Math.random() * 14 };
-            }
-
-            const maxBeams = 25;
-            for (let i = 0; i < maxBeams; i++) beams.push(createBeam());
-
-            function animateLasers() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                beams.forEach((beam, index) => {
-                    beam.x += beam.vx;
-                    beam.y += beam.vy;
-                    const margin = beam.length + 50;
-                    if (beam.x > canvas.width + margin || beam.x < -margin || beam.y > canvas.height + margin || beam.y < -margin) {
-                        beams[index] = createBeam();
-                        return;
-                    }
-                    const { x, y, vx, vy, length, color, alpha, thickness, glowSize } = beams[index];
-                    let endX, endY;
-                    if (vx !== 0) { endX = x + (vx > 0 ? length : -length); endY = y; } else { endX = x; endY = y + (vy > 0 ? length : -length); }
-                    ctx.save();
-                    ctx.shadowColor = color.glow + (alpha * 0.8) + ')';
-                    ctx.shadowBlur = glowSize;
-                    ctx.strokeStyle = color.glow + alpha + ')';
-                    ctx.lineWidth = thickness + 2;
-                    ctx.beginPath();
-                    ctx.moveTo(x, y);
-                    ctx.lineTo(endX, endY);
-                    ctx.stroke();
-                    ctx.shadowBlur = glowSize * 0.5;
-                    ctx.strokeStyle = color.glow + Math.min(1, alpha + 0.25) + ')';
-                    ctx.lineWidth = thickness;
-                    ctx.beginPath();
-                    ctx.moveTo(x, y);
-                    ctx.lineTo(endX, endY);
-                    ctx.stroke();
-                    ctx.shadowBlur = 0;
-                    ctx.strokeStyle = 'rgba(255,255,255,' + (alpha * 0.5) + ')';
-                    ctx.lineWidth = thickness * 0.4;
-                    ctx.beginPath();
-                    ctx.moveTo(x, y);
-                    ctx.lineTo(endX, endY);
-                    ctx.stroke();
-                    ctx.restore();
-                });
-                requestAnimationFrame(animateLasers);
-            }
-            animateLasers();
-
-            // ===== HERO SLIDER =====
-            const heroSlides = document.querySelectorAll('.hero-slide-item');
-            const heroIndicators = document.querySelectorAll('.slide-indicators span');
-            let currentHeroSlide = 0;
-            const totalHeroSlides = heroSlides.length;
-            let heroInterval;
-
-            function showHeroSlide(index) {
-                heroSlides.forEach(s => s.classList.remove('active'));
-                heroIndicators.forEach(i => i.classList.remove('active'));
-                heroSlides[index].classList.add('active');
-                heroIndicators[index].classList.add('active');
-                currentHeroSlide = index;
-            }
-
-            function nextHeroSlide() {
-                showHeroSlide((currentHeroSlide + 1) % totalHeroSlides);
-            }
-
-            function startHeroSlideShow() {
-                heroInterval = setInterval(nextHeroSlide, 5000);
-            }
-
-            function resetHeroSlideShow() {
-                clearInterval(heroInterval);
-                startHeroSlideShow();
-            }
-
-            heroIndicators.forEach(ind => {
-                ind.addEventListener('click', () => {
-                    const index = parseInt(ind.getAttribute('data-index'));
-                    showHeroSlide(index);
-                    resetHeroSlideShow();
-                });
+        // Mobile menu
+        const mobileBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+        mobileBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            mobileBtn.innerHTML = navMenu.classList.contains('active')
+                ? '<i class="fas fa-times"></i>'
+                : '<i class="fas fa-bars"></i>';
+        });
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                mobileBtn.innerHTML = '<i class="fas fa-bars"></i>';
             });
-            startHeroSlideShow();
+        });
 
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'ArrowRight') { nextHeroSlide(); resetHeroSlideShow(); }
-                else if (e.key === 'ArrowLeft') { showHeroSlide((currentHeroSlide - 1 + totalHeroSlides) % totalHeroSlides); resetHeroSlideShow(); }
-            });
+        // Welcome & Services sliders (now 5 service slides)
+        let welcomeIdx = 0, serviceIdx = 0;
+        const welcomeSlides = document.querySelectorAll('.welcome-slide');
+        const serviceSlides = document.querySelectorAll('.services-slide');
+        setInterval(() => {
+            welcomeSlides[welcomeIdx].classList.remove('active');
+            welcomeIdx = (welcomeIdx + 1) % welcomeSlides.length;
+            welcomeSlides[welcomeIdx].classList.add('active');
+        }, 6000);
+        setInterval(() => {
+            serviceSlides[serviceIdx].classList.remove('active');
+            serviceIdx = (serviceIdx + 1) % serviceSlides.length;
+            serviceSlides[serviceIdx].classList.add('active');
+        }, 5000);
 
-            let touchStartX = 0, touchEndX = 0;
-            const heroSection = document.getElementById('home');
-            heroSection.addEventListener('touchstart', function(e) { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
-            heroSection.addEventListener('touchend', function(e) {
-                touchEndX = e.changedTouches[0].screenX;
-                const diff = touchStartX - touchEndX;
-                if (Math.abs(diff) > 50) {
-                    if (diff > 0) { nextHeroSlide(); resetHeroSlideShow(); }
-                    else { showHeroSlide((currentHeroSlide - 1 + totalHeroSlides) % totalHeroSlides); resetHeroSlideShow(); }
-                }
-            }, { passive: true });
-
-            // ===== SERVICES SLIDER =====
-            const serviceSlides = document.querySelectorAll('.services-slide-item');
-            let currentServiceSlide = 0;
-            const totalServiceSlides = serviceSlides.length;
-
-            function showServiceSlide(index) {
-                serviceSlides.forEach(s => s.classList.remove('active'));
-                serviceSlides[index].classList.add('active');
-                currentServiceSlide = index;
-            }
-
-            function nextServiceSlide() {
-                showServiceSlide((currentServiceSlide + 1) % totalServiceSlides);
-            }
-            setInterval(nextServiceSlide, 5000);
-
-            // ===== MOBILE MENU =====
-            const hamburger = document.getElementById('hamburger');
-            const navLinks = document.getElementById('navLinks');
-            const allNavLinks = navLinks.querySelectorAll('a');
-
-            hamburger.addEventListener('click', () => {
-                hamburger.classList.toggle('active');
-                navLinks.classList.toggle('active');
-            });
-
-            allNavLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    hamburger.classList.remove('active');
-                    navLinks.classList.remove('active');
-                });
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!hamburger.contains(e.target) && !navLinks.contains(e.target) && navLinks.classList.contains('active')) {
-                    hamburger.classList.remove('active');
-                    navLinks.classList.remove('active');
-                }
-            });
-
-            // ===== NAVBAR SCROLL & ACTIVE =====
-            const navbar = document.getElementById('navbar');
-            const sections = document.querySelectorAll('section[id]');
-
-            function updateActiveNav() {
-                const scrollY = window.scrollY + 100;
-                let currentSection = 'home';
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop;
-                    const sectionHeight = section.offsetHeight;
-                    if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
-                        currentSection = section.getAttribute('id');
-                    }
-                });
-                allNavLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('data-section') === currentSection) {
-                        link.classList.add('active');
-                    }
-                });
-                if (window.scrollY > 50) {
-                    navbar.classList.add('scrolled');
+        // Animated counters
+        function animateCounter(id, target) {
+            let el = document.getElementById(id), current = 0, step = target / 60;
+            let timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    el.innerText = target + '+';
+                    clearInterval(timer);
                 } else {
-                    navbar.classList.remove('scrolled');
+                    el.innerText = Math.floor(current);
                 }
-            }
-            window.addEventListener('scroll', updateActiveNav, { passive: true });
-            updateActiveNav();
+            }, 20);
+        }
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                animateCounter('membersCount', 320);
+                animateCounter('studentsCount', 180);
+                animateCounter('sponsoredCount', 45);
+                animateCounter('teachersCount', 22);
+            }, 800);
+        });
+        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
 
-            // ===== SMOOTH SCROLL =====
-            allNavLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href').substring(1);
-                    const targetSection = document.getElementById(targetId);
-                    if (targetSection) {
-                        const navHeight = navbar.offsetHeight;
-                        const targetPosition = targetSection.offsetTop - navHeight;
-                        window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-                    }
-                });
+        // Sliding images inside service cards
+        document.querySelectorAll('.service-img').forEach(card => {
+            const slides = card.querySelectorAll('.img-slide');
+            if (slides.length < 2) return;
+            let current = 0;
+            setInterval(() => {
+                slides[current].style.opacity = 0;
+                current = (current + 1) % slides.length;
+                slides[current].style.opacity = 1;
+            }, 3000);
+        });
+
+        // All "Get Involved" buttons now scroll to contact section (no more popup)
+        document.querySelectorAll('.scroll-contact-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const contactSection = document.querySelector('#contact');
+                if (contactSection) {
+                    contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             });
+        });
 
-            // ===== FOOTER YEAR =====
-            document.getElementById('year').textContent = new Date().getFullYear();
-        })();
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                let target = document.querySelector(this.getAttribute('href'));
+                if (target) window.scrollTo({ top: target.offsetTop - 100, behavior: 'smooth' });
+            });
+        });
     </script>
 </body>
 </html>
